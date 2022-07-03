@@ -101,8 +101,8 @@ TinyObjLoader is successfully used in ...
 ## Features
 
 * Group(parse multiple group name)
-* Vertex
-  * Vertex color(as an extension: https://blender.stackexchange.com/questions/31997/how-can-i-get-vertex-painted-obj-files-to-import-into-blender)
+* V
+  * V color(as an extension: https://blender.stackexchange.com/questions/31997/how-can-i-get-vertex-painted-obj-files-to-import-into-blender)
 * Texcoord
 * Normal
 * PhysicalMaterial

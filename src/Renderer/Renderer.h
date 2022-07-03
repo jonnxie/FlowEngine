@@ -5,6 +5,8 @@
 #ifndef FLOWENGINE_RENDERER_H
 #define FLOWENGINE_RENDERER_H
 
+#include <vector>
+
 namespace Flow {
 
 class FrameBuffer;

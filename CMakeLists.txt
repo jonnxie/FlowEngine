@@ -53,7 +53,7 @@ target_include_directories(FlowEngine PUBLIC
         thirdparty/stb-master/
         thirdparty/tinyobjloader-master/
         thirdparty/tinygltf/
-        thirdparty/glfw-3.3.4.bin.WIN64/include/
+#        thirdparty/glfw-3.3.4.bin.WIN64/include/
         thirdparty/glm/
         thirdparty/Entt/
         thirdparty/json/

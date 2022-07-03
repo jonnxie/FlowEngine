@@ -11,13 +11,28 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+#ifdef NDEBUG
+static const bool enableValidationLayers = false;
+#else
+static const bool enableValidationLayers = true;
+#endif
+
 namespace Flow{
 
     class VulkanFrameBuffer;
 
+    const std::vector<const char *> validationLayers = {
+            "VK_LAYER_RENDERDOC_Capture",
+            "VK_LAYER_KHRONOS_validation",
+    };
+
+    const std::vector<const char *> deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+    };
+
     class VulkanRendererContext : public RendererContext{
     public:
-        VulkanRendererContext();
+        VulkanRendererContext(Window* _window);
         DisableCopy(VulkanRendererContext);
     private:
         void init();
@@ -30,10 +45,18 @@ namespace Flow{
         VkCommandBuffer beginSingleCommandBuffer();
         void endSingleCommandBuffer(VkCommandBuffer _cmd);
     private:
+        void createInstance();
+        void createSurface();
+        bool checkValidationLayerSupport();
+        void setDebugCallback();
+        std::vector<const char *> getRequiredExtensions();
+    private:
         VkDevice device;
         VkInstance instance;
+        VkDebugReportCallbackEXT callback{};
         VkPhysicalDevice physicalDevice;
         VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+        VkSurfaceKHR surface{};
     private:
         uint32_t currentPresentIndex;
         std::vector<UP(VulkanFrameBuffer)> frameBuffers;

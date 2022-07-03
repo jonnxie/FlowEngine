@@ -7,10 +7,16 @@
 #include "Platform/Vulkan/VulkanFrameBuffer.h"
 
 namespace Flow {
-    SP(RendererContext) RendererContext::get() {
+
+    SP(RendererContext)RendererContext::context = nullptr;
+
+    void RendererContext::createRenderContext(Window* _window) {
 #ifdef FLOW_GRAPHICS_VULKAN
-        static SP(VulkanRendererContext) context = std::make_shared<VulkanRendererContext>();
-        return context;
+        context = std::make_shared<VulkanRendererContext>(_window);
 #endif
+    }
+
+    SP(RendererContext) RendererContext::get() {
+        return context;
     }
 } // Flow

@@ -9,16 +9,23 @@
 #include <utility>
 #include "Macro/Macro.h"
 #include <memory>
+#include "Window/window.h"
+
 namespace Flow {
 
     class RendererContext {
     public:
+        RendererContext(Window* _window): window(_window){};
         virtual ~RendererContext() = default;
+        static void createRenderContext(Window* _window);
         static SP(RendererContext) get();
         virtual void saveScreenshot(std::basic_string<char> filename) = 0;
         std::pair<uint32_t, uint32_t> getPresentExtent() {return presentExtent;}
     private:
+        static SP(RendererContext) context;
         std::pair<uint32_t, uint32_t> presentExtent{};
+    protected:
+        Window* window;
     };
 
 } // Flow

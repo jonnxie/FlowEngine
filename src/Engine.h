@@ -7,11 +7,14 @@
 
 #include <vector>
 #include <cstdint>
-
+#include "Window/window.h"
 
 namespace Flow {
 
     class Engine {
+    public:
+        void init();
+        void update();
 
     };
 

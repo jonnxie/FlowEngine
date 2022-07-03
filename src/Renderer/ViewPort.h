@@ -9,7 +9,7 @@
 #include <utility>
 #include "Scene/Camera.h"
 #include <memory>
-#include "FrameBuffer/FrameBuffer.h"
+#include "FrameBuffer.h"
 
 namespace Flow{
 

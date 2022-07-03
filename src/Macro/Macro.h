@@ -7,6 +7,7 @@
 
 #include <glm.hpp>
 #include <string>
+#include <map>
 
 namespace Flow {
 
@@ -72,17 +73,6 @@ namespace Flow {
         DepthWriteDisable,
         DepthDisable,
         MaxDepth,
-    };
-
-    enum class Event{
-        SingleClick = 0,
-        MouseClick,
-        SinglePress,
-        DoubleClick,
-        DoublePress,
-        DeletePress,
-        MouseMove,
-        Count,
     };
 
     enum class DrawObjectType{
@@ -194,6 +184,18 @@ Class& operator = (Class&&) = delete
 #define GuardMutex(lock) std::lock_guard<std::mutex> lockGuard(lock);
 
 #define throwFile(x) throw std::runtime_error(std::string("no such file ") + x)
+
+#define ClassProtectedReferenceElement(elementName, elementType, funcName) \
+    protected:                                                    \
+    elementType elementName{};                                    \
+    public:                                                       \
+    elementType& get##funcName()                                  \
+    {                                                             \
+        return elementName;                                       \
+    }
+
+#define GuardLock(lock) std::lock_guard<std::mutex> lockGuard(lock);
+
 
 } // FlowEngine
 

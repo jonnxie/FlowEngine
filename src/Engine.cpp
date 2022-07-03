@@ -5,4 +5,11 @@
 #include "Engine.h"
 
 namespace Flow {
+    void Engine::init() {
+
+    }
+
+    void Engine::update() {
+
+    }
 } // FlowEngine
