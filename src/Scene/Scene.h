@@ -16,7 +16,7 @@ namespace Flow {
     class Scene {
     public:
         Object createObject(const std::string& _name = "Empty Object");
-        const entt::registry& get(){return registry;};
+        entt::registry& get(){return registry;};
     private:
         std::vector<SP(ViewPort)> viewports;
         entt::registry registry;

@@ -9,14 +9,30 @@
 
 namespace Flow{
 
-    struct IDComponent{
-        IDComponent(){
+    struct ID{
+        ID(){
             id = FlowID;
         };
-        ~IDComponent(){
+        ID(uint64_t _id): id(_id){}
+        ~ID(){
             IDManager::get().free(id);
         }
+        operator uint64_t() const {return id;}
         uint64_t id;
+    };
+
+    struct Relation{
+        uint64_t parentHandle = 0;
+        std::vector<uint64_t> children;
+        Default(Relation);
+        Relation(const uint64_t& _parent) : parentHandle(_parent){}
+    };
+
+    struct Tag{
+        std::string tag;
+        Default(Tag);
+        Tag(const std::string& _tag) : tag(_tag){}
+        operator const std::string& () const {return tag;}
     };
 
     struct MultipleComponent{
