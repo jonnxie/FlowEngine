@@ -79,8 +79,33 @@ namespace Flow {
 
         void setParentID(uint64_t _parent) { getComponent<Relation>().parentHandle = _parent;}
         uint64_t getParentID() { return getComponent<Relation>().parentHandle;}
-        std::vector<uint64_t>& children() { return getComponent<Relation>().children;}
+        std::vector<uint64_t>& getChildren() { return getComponent<Relation>().children;}
 
+        bool removeChild(Object _child){
+            uint64_t childID = _child.getID();
+            auto& children = getChildren();
+            auto it = std::find(children.begin(), children.end(), childID);
+            if (it != children.end())
+            {
+                children.erase(it);
+                return true;
+            }
+            return false;
+        }
+
+        bool isAncestorOf(Object _object)
+        {
+            auto& children = getChildren();
+
+            if (children.empty()) return false;
+            if (std::find(children.begin(), children.end(), _object.getID()) != children.end()) return true;
+
+        }
+
+        uint64_t getID() { return getComponent<ID>();}
+        uint64_t getSceneID() { return scene->getSceneID();}
+
+    protected:
         ClassProtectedReferenceElement(name, std::string, Name);
     private:
         entt::entity handle;

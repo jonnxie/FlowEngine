@@ -24,6 +24,8 @@ namespace Flow {
         uint64_t count{};
     };
 
+
+
 #define FlowID IDManager::get().generate()
 } // Flow
 
