@@ -99,8 +99,16 @@ namespace Flow {
 
             if (children.empty()) return false;
             if (std::find(children.begin(), children.end(), _object.getID()) != children.end()) return true;
-
+            for (uint64_t id : children){
+                if (scene->getObjectWithID(id)->isAncestorOf(_object))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
+
+        bool isDescendantOf(Object _object) { return _object.isAncestorOf(*this);}
 
         uint64_t getID() { return getComponent<ID>();}
         uint64_t getSceneID() { return scene->getSceneID();}

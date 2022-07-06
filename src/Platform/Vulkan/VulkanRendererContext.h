@@ -37,6 +37,12 @@ namespace Flow{
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,
     };
 
+    struct SwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats{};
+        std::vector<VkPresentModeKHR> presentModes{};
+    };
+
     class VulkanRendererContext : public RendererContext{
     public:
         VulkanRendererContext(Window* _window);
@@ -58,33 +64,43 @@ namespace Flow{
         void createPhysicalDevice();
         void createLogicalDevice();
         void createQueueIndices();
+        void createSwapChain();
+        void createPresentRenderPass();
+        void createCommandPool();
+        void createGraphicsCommandPool();
+        void createComputeCommandPool();
+        void createTransferCommandPool();
+        void createDescriptorPool();
         bool checkValidationLayerSupport();
         bool checkPhysicalDevice(VkPhysicalDevice _physicalDevice);
         bool checkExtensionSupport(VkPhysicalDevice _physicalDevice);
         bool checkQueueIndices();
         bool checkIndicesExist(int _index) const;
+        SwapChainSupportDetails checkSwapChainSupport();
         std::vector<const char *> getRequiredExtensions();
         bool IsolateQueue(std::map<VkQueueFlagBits, int &> _map, const std::vector<VkQueueFamilyProperties> &_queueFamilies);
     private:
-        VkDevice device;
-        VkInstance instance;
+        VkDevice device{};
+        VkInstance instance{};
         VkDebugReportCallbackEXT callback{};
-        VkPhysicalDevice physicalDevice;
-        VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties;
+        VkPhysicalDevice physicalDevice{};
+        VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties{};
         VkSurfaceKHR surface{};
         VkPhysicalDeviceProperties physicalDeviceProperties{};
-        VkQueue compute_queue;
-        VkQueue graphics_queue;
-        VkQueue present_queue;
-        VkQueue transfer_queue;
+        VkQueue computeQueue{}, graphicsQueue{}, presentQueue{}, transferQueue{};
+        VkCommandPool graphicCP{}, computeCP{}, transferCP{};
+        VkDescriptorPool descriptorPool{};
         struct QueueFamilyIndices {
             int graphicsFamily = -1, presentFamily = -1, computeFamily = -1, transferFamily = -1;
             bool complete() const { return graphicsFamily >= 0 && presentFamily >= 0 && computeFamily >= 0 && transferFamily >= 0;}
         }queueIndices;
     private:
-        uint32_t currentPresentIndex;
-        std::vector<UP(VulkanFrameBuffer)> frameBuffers;
-        VkFormat swapChainFormat;
+        uint32_t currentPresentIndex{};
+        std::vector<UP(VulkanFrameBuffer)> frameBuffers{};
+        VkFormat swapChainFormat{};
+        VkSwapchainKHR swapchain{VK_NULL_HANDLE};
+        uint32_t swapchainCount{};
+        VkRenderPass renderPass{};
     };
 
 #define VulkanDevice (*(VulkanRendererContext*)RendererContext::get().get())

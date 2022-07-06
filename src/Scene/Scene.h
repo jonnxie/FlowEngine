@@ -10,18 +10,20 @@
 #include "entt.hpp"
 
 namespace Flow {
-
     class Object;
+    using ObjectMap = std::unordered_map<uint64_t, Object*>;
 
     class Scene {
     public:
         Object createObject(const std::string& _name = "Empty Object");
         entt::registry& get(){return registry;};
+        uint64_t getSceneID() {return 0;};
+        Object* getObjectWithID(uint64_t _id);
     private:
         std::vector<SP(ViewPort)> viewports;
+        ObjectMap objectMap;
         entt::registry registry;
     };
-
 } // FlowEngine
 
 #endif //FLOWENGINE_SCENE_H
