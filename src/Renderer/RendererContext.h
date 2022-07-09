@@ -20,10 +20,9 @@ namespace Flow {
         static void createRenderContext(Window* _window);
         static SP(RendererContext) get();
         virtual void saveScreenshot(std::basic_string<char> filename) = 0;
-        std::pair<uint32_t, uint32_t> getPresentExtent() {return presentExtent;}
+        std::pair<uint32_t, uint32_t> getPresentExtent() {return (*window)();}
     private:
         static SP(RendererContext) context;
-        std::pair<uint32_t, uint32_t> presentExtent{};
     protected:
         Window* window;
     };

@@ -20,7 +20,9 @@ namespace Flow {
         ~VulkanSmartHandle();
         void release();
     public:
-        operator Handle() {return handle;}
+        operator Handle() const {return handle;}
+        operator Handle&() {return handle;}
+        VulkanSmartHandle& operator=(Handle _handle) {handle = _handle;}
     private:
         Handle handle{VK_NULL_HANDLE};
     };
@@ -47,6 +49,16 @@ namespace Flow {
             vkDestroySampler(device, handle,nullptr);
         } else if constexpr(std::is_same_v<Handle, VkFramebuffer>) {
             vkDestroyFramebuffer(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkPipelineCache>) {
+            vkDestroyPipelineCache(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkPipelineLayout>) {
+            vkDestroyPipelineLayout(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkDescriptorSetLayout>) {
+            vkDestroyDescriptorSetLayout(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkPipeline>) {
+            vkDestroyPipeline(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkDescriptorPool>) {
+            vkDestroyDescriptorPool(device, handle, nullptr);
         }
         handle = VK_NULL_HANDLE;
     }

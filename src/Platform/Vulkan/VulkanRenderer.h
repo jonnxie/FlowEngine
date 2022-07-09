@@ -10,6 +10,9 @@
 namespace Flow {
 
     class VulkanRenderer : public Renderer{
+    public:
+
+    private:
 
     };
 

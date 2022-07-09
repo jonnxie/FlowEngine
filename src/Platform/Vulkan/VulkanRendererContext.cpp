@@ -52,7 +52,7 @@ namespace Flow{
         }
 
         // Source for the copy is the last rendered swapchain image
-        VkImage srcImage = frameBuffers[currentPresentIndex]->getAttachments()[0].image;
+        VkImage srcImage = m_presents[currentPresentIndex].image;
 
         // Create the linear tiled destination image to copy to and to read the memory from
         VkImageCreateInfo imageCreateCI(tool::imageCreateInfo());
@@ -256,6 +256,7 @@ namespace Flow{
         createPresentRenderPass();
         createCommandPool();
         createDescriptorPool();
+        createPresentFrameBuffers();
     }
 
     void VulkanRendererContext::createInstance() {
@@ -385,6 +386,7 @@ namespace Flow{
         }
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &physicalDeviceMemoryProperties);
         createQueueIndices();
+        physicalDeviceName = physicalDeviceProperties.deviceName;
     }
 
     bool VulkanRendererContext::checkExtensionSupport(VkPhysicalDevice _physicalDevice) {
@@ -632,6 +634,7 @@ namespace Flow{
             imageCount > swapChainSupport.capabilities.maxImageCount) {
             imageCount = swapChainSupport.capabilities.maxImageCount;
         }
+        minSwapchainCount = swapChainSupport.capabilities.minImageCount;
         VkSwapchainKHR oldSwapchain = swapchain;
 
         VkSwapchainCreateInfoKHR createInfo = {};
@@ -778,6 +781,71 @@ namespace Flow{
 
         if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create descriptor Pool!");
+        }
+    }
+
+    void VulkanRendererContext::createPresentFrameBuffers() {
+        std::vector<VkImage> images(swapchainCount);
+        vkGetSwapchainImagesKHR(device, swapchain, &swapchainCount, images.data());
+        VkSamplerCreateInfo samplerInfo = tool::samplerCreateInfo();
+        for (int i = 0; i < swapchainCount; i++)
+        {
+            m_presents[i].image = images[i];
+
+            m_presents[i].imageView = createImageView(images[i], swapChainFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            vkCreateSampler(device, &samplerInfo, nullptr, &m_presents[i].sampler);
+            VkFramebufferCreateInfo framebufferInfo = {};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = renderPass;
+            framebufferInfo.attachmentCount = 1;
+            framebufferInfo.pAttachments = &m_presents[i].imageView;
+            framebufferInfo.width = (*window)().first;
+            framebufferInfo.height = (*window)().second;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_presents[i].framebuffer) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
+        }
+    }
+
+    VkImageView VulkanRendererContext::createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags) {
+        VkImageViewCreateInfo viewInfo = {};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = _image;
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.format = _format;
+        viewInfo.subresourceRange.aspectMask = _aspectFlags;
+        viewInfo.subresourceRange.baseMipLevel = 0;
+        viewInfo.subresourceRange.levelCount = 1;
+        viewInfo.subresourceRange.baseArrayLayer = 0;
+        viewInfo.subresourceRange.layerCount = 1;
+
+        VkImageView imageview;
+        if (vkCreateImageView(device, &viewInfo, nullptr, &imageview) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create texture image view!");
+        }
+        return imageview;
+    }
+
+    VkQueue VulkanRendererContext::getQueue(QueueType _type) {
+        switch (_type) {
+            case QueueType::Graphics:
+            {
+                return graphicsQueue;
+            }
+            case QueueType::Compute:
+            {
+                return computeQueue;
+            }
+            case QueueType::Present:
+            {
+                return presentQueue;
+            }
+            case QueueType::Transfer:
+            {
+                return transferQueue;
+            }
         }
     }
 

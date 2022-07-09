@@ -16,8 +16,6 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-
-
 #ifdef NDEBUG
 static const bool enableValidationLayers = false;
 #else
@@ -43,6 +41,18 @@ namespace Flow{
         std::vector<VkPresentModeKHR> presentModes{};
     };
 
+    enum class QueueType{
+        Graphics,
+        Compute,
+        Present,
+        Transfer
+    };
+
+    struct QueueFamilyIndices {
+        int graphicsFamily = -1, presentFamily = -1, computeFamily = -1, transferFamily = -1;
+        bool complete() const { return graphicsFamily >= 0 && presentFamily >= 0 && computeFamily >= 0 && transferFamily >= 0;}
+    };
+
     class VulkanRendererContext : public RendererContext{
     public:
         VulkanRendererContext(Window* _window);
@@ -56,7 +66,15 @@ namespace Flow{
         VkFormat getSwapChainFormat() {return swapChainFormat;}
         void saveScreenshot(std::basic_string<char> _filename) override;
         VkCommandBuffer beginSingleCommandBuffer();
+        VkRenderPass getRenderPass() {return renderPass;}
         void endSingleCommandBuffer(VkCommandBuffer _cmd);
+        VkQueue getQueue(QueueType _type);
+        VkInstance getInstance() {return instance;};
+        QueueFamilyIndices& getIndices() {return queueIndices;}
+        VkDescriptorPool& getDescriptorPool() {return descriptorPool;}
+        uint32_t getSwapChainCount() {return swapchainCount;}
+        uint32_t getMinSwapChainCount() {return minSwapchainCount;}
+        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
     private:
         void createInstance();
         void setDebugCallback();
@@ -71,8 +89,9 @@ namespace Flow{
         void createComputeCommandPool();
         void createTransferCommandPool();
         void createDescriptorPool();
-        bool checkValidationLayerSupport();
+        void createPresentFrameBuffers();
         bool checkPhysicalDevice(VkPhysicalDevice _physicalDevice);
+        bool checkValidationLayerSupport();
         bool checkExtensionSupport(VkPhysicalDevice _physicalDevice);
         bool checkQueueIndices();
         bool checkIndicesExist(int _index) const;
@@ -84,23 +103,28 @@ namespace Flow{
         VkInstance instance{};
         VkDebugReportCallbackEXT callback{};
         VkPhysicalDevice physicalDevice{};
+        std::string physicalDeviceName{};
         VkPhysicalDeviceMemoryProperties physicalDeviceMemoryProperties{};
         VkSurfaceKHR surface{};
         VkPhysicalDeviceProperties physicalDeviceProperties{};
         VkQueue computeQueue{}, graphicsQueue{}, presentQueue{}, transferQueue{};
         VkCommandPool graphicCP{}, computeCP{}, transferCP{};
         VkDescriptorPool descriptorPool{};
-        struct QueueFamilyIndices {
-            int graphicsFamily = -1, presentFamily = -1, computeFamily = -1, transferFamily = -1;
-            bool complete() const { return graphicsFamily >= 0 && presentFamily >= 0 && computeFamily >= 0 && transferFamily >= 0;}
-        }queueIndices;
+        QueueFamilyIndices queueIndices{};
     private:
         uint32_t currentPresentIndex{};
-        std::vector<UP(VulkanFrameBuffer)> frameBuffers{};
         VkFormat swapChainFormat{};
         VkSwapchainKHR swapchain{VK_NULL_HANDLE};
         uint32_t swapchainCount{};
+        uint32_t minSwapchainCount{};
         VkRenderPass renderPass{};
+        struct VkPresent {
+            VkImage image;
+            VkImageView imageView;
+            VkSampler sampler;
+            VkFramebuffer framebuffer;
+        };
+        std::vector<VkPresent> m_presents{};
     };
 
 #define VulkanDevice (*(VulkanRendererContext*)RendererContext::get().get())
