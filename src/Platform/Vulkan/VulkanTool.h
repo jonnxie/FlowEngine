@@ -258,6 +258,8 @@ namespace Flow {
 
         uint32_t getMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
+        void crateBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
+
         inline std::string strBool(bool _val){
             return _val? "True":"False";
         }

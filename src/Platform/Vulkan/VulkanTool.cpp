@@ -877,6 +877,35 @@ namespace Flow {
             return shaderModule;
         }
 
+        void crateBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer &_buffer,
+                         VkDeviceMemory& _memory, uint64_t _size) {
+            auto& device = VulkanDevice;
+            VkBufferCreateInfo bufferInfo = bufferCreateInfo(_flags, _size);
+            bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+            #ifdef NDEBUG
+                if (vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer) != VK_SUCCESS) {
+                    FlowError("Fail to create buffer");
+                }
+            #else
+                vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
+            #endif
+            VkMemoryRequirements requirements;
+            vkGetBufferMemoryRequirements(device, _buffer, &requirements);
+
+            VkMemoryAllocateInfo allocateInfo = memoryAllocateInfo();
+            allocateInfo.allocationSize = requirements.size;
+            allocateInfo.memoryTypeIndex = getMemoryType(requirements.memoryTypeBits, _property);
+
+            #ifdef NDEBUG
+            FlowCheckVulkan(vkAllocateMemory(device, &allocateInfo, nullptr, &_memory));
+            FlowCheckVulkan(vkBindBufferMemory(device, _buffer, _memory, 0));
+            #else
+            vkAllocateMemory(device, &allocateInfo, nullptr, &_memory);
+            vkBindBufferMemory(device, _buffer, _memory, 0);
+            #endif
+        }
+
     }
 
 

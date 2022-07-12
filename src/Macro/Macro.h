@@ -204,8 +204,14 @@ Class(const Class&) = default
 #define FlowWarning(msg)    \
 std::cout << "FlowWarning : " << "msg" << " in " << __FILE__ << " at line " << __LINE__ << "\n"; \
 
-#define FlowError(mag) \
-throw std::runtime_error(std::string("FlowError: ") + std::string("msg") + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__))
+#define FlowError(msg) \
+throw std::runtime_error(std::string("FlowError: ") + std::string(#msg) + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__))
+
+
+#define FlowCheckVulkan(fuc) \
+if (fuc != VK_SUCCESS) {  \
+    FlowError("Fail to create buffer"); \
+}
 
 } // FlowEngine
 

@@ -22,7 +22,7 @@ namespace Flow {
     public:
         operator Handle() const {return handle;}
         operator Handle&() {return handle;}
-        VulkanSmartHandle& operator=(Handle _handle) {handle = _handle;}
+        VulkanSmartHandle& operator=(Handle _handle) {handle = _handle; return *this;}
     private:
         Handle handle{VK_NULL_HANDLE};
     };
