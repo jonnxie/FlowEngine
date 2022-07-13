@@ -16,15 +16,21 @@ namespace Flow {
     }
 
     void VulkanBuffer::unmap() {
-        vkUnmapMemory(VulkanDevice, memory);
-        mapped = nullptr;
+        if (mapped)
+        {
+            vkUnmapMemory(VulkanDevice, memory);
+            mapped = nullptr;
+        }
     }
 
     void VulkanBuffer::map(VkDeviceSize size, VkDeviceSize offset) {
-        #ifdef NDEBUG
-            FlowCheckVulkan(vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped));
-        #else
+        if (!mapped)
+        {
+#ifdef NDEBUG
             vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped);
-        #endif
+#else
+            FlowCheckVulkan(vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped));
+#endif
+        }
     }
 } // Flow

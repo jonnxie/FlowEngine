@@ -24,7 +24,7 @@ namespace Flow {
             return *this;
         }
     public:
-        VkBuffer getBuffer() const {return buffer;}
+        VkBuffer& getBuffer() {return buffer;}
         explicit operator void*() const {return mapped;}
         void map(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         void unmap();

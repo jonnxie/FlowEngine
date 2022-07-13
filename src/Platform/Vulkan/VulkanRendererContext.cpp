@@ -792,7 +792,7 @@ namespace Flow{
         {
             m_presents[i].image = images[i];
 
-            m_presents[i].imageView = createImageView(images[i], swapChainFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            m_presents[i].imageView = tool::createImageView(images[i], swapChainFormat, VK_IMAGE_ASPECT_COLOR_BIT);
             vkCreateSampler(device, &samplerInfo, nullptr, &m_presents[i].sampler);
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -807,25 +807,6 @@ namespace Flow{
                 throw std::runtime_error("failed to create framebuffer!");
             }
         }
-    }
-
-    VkImageView VulkanRendererContext::createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags) {
-        VkImageViewCreateInfo viewInfo = {};
-        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        viewInfo.image = _image;
-        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        viewInfo.format = _format;
-        viewInfo.subresourceRange.aspectMask = _aspectFlags;
-        viewInfo.subresourceRange.baseMipLevel = 0;
-        viewInfo.subresourceRange.levelCount = 1;
-        viewInfo.subresourceRange.baseArrayLayer = 0;
-        viewInfo.subresourceRange.layerCount = 1;
-
-        VkImageView imageview;
-        if (vkCreateImageView(device, &viewInfo, nullptr, &imageview) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create texture image view!");
-        }
-        return imageview;
     }
 
     VkQueue VulkanRendererContext::getQueue(QueueType _type) {

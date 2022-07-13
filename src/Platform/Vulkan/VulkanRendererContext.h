@@ -74,7 +74,6 @@ namespace Flow{
         VkDescriptorPool& getDescriptorPool() {return descriptorPool;}
         uint32_t getSwapChainCount() {return swapchainCount;}
         uint32_t getMinSwapChainCount() {return minSwapchainCount;}
-        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
     private:
         void createInstance();
         void setDebugCallback();
@@ -131,6 +130,7 @@ namespace Flow{
 #define VulkanPhysicalDevice ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDevice()
 #define VulkanPhysicalDeviceMemoryProperties ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDeviceMemoryProperties()
 #define VulkanSwapChainFormat ((VulkanRendererContext*)RendererContext::get().get())->getSwapChainFormat()
+#define VulkanDescriptorPool ((VulkanRendererContext*)RendererContext::get().get())->getDescriptorPool()
 }
 
 #endif //FLOWENGINE_VULKANRENDERERCONTEXT_H

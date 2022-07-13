@@ -260,6 +260,8 @@ namespace Flow {
 
         void crateBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
 
+        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
+
         inline std::string strBool(bool _val){
             return _val? "True":"False";
         }

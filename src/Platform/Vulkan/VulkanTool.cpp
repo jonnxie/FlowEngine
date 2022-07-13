@@ -884,11 +884,11 @@ namespace Flow {
             bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
             #ifdef NDEBUG
+                vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
+            #else
                 if (vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer) != VK_SUCCESS) {
                     FlowError("Fail to create buffer");
                 }
-            #else
-                vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
             #endif
             VkMemoryRequirements requirements;
             vkGetBufferMemoryRequirements(device, _buffer, &requirements);
@@ -898,12 +898,31 @@ namespace Flow {
             allocateInfo.memoryTypeIndex = getMemoryType(requirements.memoryTypeBits, _property);
 
             #ifdef NDEBUG
-            FlowCheckVulkan(vkAllocateMemory(device, &allocateInfo, nullptr, &_memory));
-            FlowCheckVulkan(vkBindBufferMemory(device, _buffer, _memory, 0));
+                vkAllocateMemory(device, &allocateInfo, nullptr, &_memory);
+                vkBindBufferMemory(device, _buffer, _memory, 0);
             #else
-            vkAllocateMemory(device, &allocateInfo, nullptr, &_memory);
-            vkBindBufferMemory(device, _buffer, _memory, 0);
+                FlowCheckVulkan(vkAllocateMemory(device, &allocateInfo, nullptr, &_memory));
+                FlowCheckVulkan(vkBindBufferMemory(device, _buffer, _memory, 0));
             #endif
+        }
+
+        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags) {
+            VkImageViewCreateInfo viewInfo = {};
+            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            viewInfo.image = _image;
+            viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            viewInfo.format = _format;
+            viewInfo.subresourceRange.aspectMask = _aspectFlags;
+            viewInfo.subresourceRange.baseMipLevel = 0;
+            viewInfo.subresourceRange.levelCount = 1;
+            viewInfo.subresourceRange.baseArrayLayer = 0;
+            viewInfo.subresourceRange.layerCount = 1;
+
+            VkImageView imageview;
+            if (vkCreateImageView(VulkanDevice, &viewInfo, nullptr, &imageview) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create texture image view!");
+            }
+            return imageview;
         }
 
     }
