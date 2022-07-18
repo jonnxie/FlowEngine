@@ -72,8 +72,10 @@ namespace Flow{
         VkInstance getInstance() {return instance;};
         QueueFamilyIndices& getIndices() {return queueIndices;}
         VkDescriptorPool& getDescriptorPool() {return descriptorPool;}
+        VkSampler& getLinearSampler() {return linearSampler;}
         uint32_t getSwapChainCount() {return swapchainCount;}
         uint32_t getMinSwapChainCount() {return minSwapchainCount;}
+        void allocateDescriptorSet(VkDescriptorSetLayout _setLayout, VkDescriptorSet* _set);
     private:
         void createInstance();
         void setDebugCallback();
@@ -89,6 +91,7 @@ namespace Flow{
         void createTransferCommandPool();
         void createDescriptorPool();
         void createPresentFrameBuffers();
+        void createLinearSampler();
         bool checkPhysicalDevice(VkPhysicalDevice _physicalDevice);
         bool checkValidationLayerSupport();
         bool checkExtensionSupport(VkPhysicalDevice _physicalDevice);
@@ -109,6 +112,7 @@ namespace Flow{
         VkQueue computeQueue{}, graphicsQueue{}, presentQueue{}, transferQueue{};
         VkCommandPool graphicCP{}, computeCP{}, transferCP{};
         VkDescriptorPool descriptorPool{};
+        VkSampler linearSampler{};
         QueueFamilyIndices queueIndices{};
     private:
         uint32_t currentPresentIndex{};
@@ -131,6 +135,8 @@ namespace Flow{
 #define VulkanPhysicalDeviceMemoryProperties ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDeviceMemoryProperties()
 #define VulkanSwapChainFormat ((VulkanRendererContext*)RendererContext::get().get())->getSwapChainFormat()
 #define VulkanDescriptorPool ((VulkanRendererContext*)RendererContext::get().get())->getDescriptorPool()
+#define VulkanContext ((VulkanRendererContext*)RendererContext::get().get())
+#define VulkanSampler ((VulkanRendererContext*)RendererContext::get().get())->getLinearSampler()
 }
 
 #endif //FLOWENGINE_VULKANRENDERERCONTEXT_H

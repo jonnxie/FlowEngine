@@ -11,6 +11,7 @@
 #include <vector>
 #include "ktx.h"
 #include "ktxvulkan.h"
+#include "spirv_reflect.h"
 
 namespace Flow {
 
@@ -32,6 +33,8 @@ namespace Flow {
 
         unsigned char* loadBinary(std::string fname);
     }
+
+    struct VulkanImageMaterialUnit;
 
     namespace tool{
         std::string combine(const std::string& _str,int num);
@@ -258,9 +261,30 @@ namespace Flow {
 
         uint32_t getMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
-        void crateBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
+        VkBufferUsageFlags reflectBufferUsage(SpvReflectDescriptorType _descriptorType);
 
-        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
+        VkImageUsageFlags reflectImageUsage(SpvReflectDescriptorType _descriptorType);
+
+        void createBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
+
+        VkImageView create2dImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
+
+        void create2dImage(uint32_t _width,
+                           uint32_t _height,
+                           VkFormat _format,
+                           VkImageTiling _tiling,
+                           VkImageUsageFlags _usage,
+                           VkMemoryPropertyFlags _properties,
+                           VkImage& _image,
+                           VkDeviceMemory& _imageMemory);
+
+        void copyBufferToImage(VkCommandBuffer _cb,
+                               VkBuffer _buffer,
+                               VkImage _image,
+                               uint32_t _width,
+                               uint32_t _height);
+
+        void reflect2DTexture(const std::string& _filename, VulkanImageMaterialUnit* _materialUnit);
 
         inline std::string strBool(bool _val){
             return _val? "True":"False";

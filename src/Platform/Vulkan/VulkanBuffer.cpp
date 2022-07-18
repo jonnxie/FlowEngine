@@ -8,7 +8,7 @@
 
 namespace Flow {
     VulkanBuffer::VulkanBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, uint64_t _size) {
-        tool::crateBuffer(_flags, _property, buffer, memory, _size);
+        tool::createBuffer(_flags, _property, buffer, memory, _size);
     }
 
     VulkanBuffer::~VulkanBuffer() {

@@ -257,6 +257,7 @@ namespace Flow{
         createCommandPool();
         createDescriptorPool();
         createPresentFrameBuffers();
+        createLinearSampler();
     }
 
     void VulkanRendererContext::createInstance() {
@@ -792,7 +793,7 @@ namespace Flow{
         {
             m_presents[i].image = images[i];
 
-            m_presents[i].imageView = tool::createImageView(images[i], swapChainFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            m_presents[i].imageView = tool::create2dImageView(images[i], swapChainFormat, VK_IMAGE_ASPECT_COLOR_BIT);
             vkCreateSampler(device, &samplerInfo, nullptr, &m_presents[i].sampler);
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -827,6 +828,40 @@ namespace Flow{
             {
                 return transferQueue;
             }
+            default: return graphicsQueue;
+        }
+    }
+
+    void VulkanRendererContext::allocateDescriptorSet(VkDescriptorSetLayout _setLayout, VkDescriptorSet* _set) {
+        VkDescriptorSetAllocateInfo allocInfo = {};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorSetCount = 1;
+        allocInfo.pSetLayouts = &_setLayout;
+
+        if (vkAllocateDescriptorSets(device, &allocInfo, _set) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor set!");
+        }
+    }
+
+    void VulkanRendererContext::createLinearSampler() {
+        VkSamplerCreateInfo samplerInfo = {};
+        samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+        samplerInfo.magFilter = VK_FILTER_LINEAR;
+        samplerInfo.minFilter = VK_FILTER_LINEAR;
+        samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+        samplerInfo.anisotropyEnable = VK_TRUE;
+        samplerInfo.maxAnisotropy = 16;
+        samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+        samplerInfo.unnormalizedCoordinates = VK_FALSE;
+        samplerInfo.compareEnable = VK_FALSE;
+        samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+        samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+        if (vkCreateSampler(device, &samplerInfo, nullptr, &linearSampler) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create texture sampler!");
         }
     }
 

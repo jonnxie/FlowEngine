@@ -32,7 +32,6 @@ namespace Flow {
         VulkanSmartHandle<VkBuffer> buffer{VK_NULL_HANDLE};
         VulkanSmartHandle<VkDeviceMemory> memory{VK_NULL_HANDLE};
         void* mapped{nullptr};
-
     };
 } // Flow
 

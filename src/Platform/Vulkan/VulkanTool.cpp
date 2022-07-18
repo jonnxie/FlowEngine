@@ -12,6 +12,11 @@
 #include <cstring>
 #include <iostream>
 #include "VulkanRendererContext.h"
+#include "VulkanMaterial.h"
+#ifndef STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#endif
+#include <stb_image.h>
 
 namespace Flow {
 
@@ -870,15 +875,18 @@ namespace Flow {
             createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
             VkShaderModule shaderModule;
+            #ifdef NDEBUG
+            vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
+            #else
             if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create shader module!");
             }
-
+            #endif
             return shaderModule;
         }
 
-        void crateBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer &_buffer,
-                         VkDeviceMemory& _memory, uint64_t _size) {
+        void createBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer &_buffer,
+                          VkDeviceMemory& _memory, uint64_t _size) {
             auto& device = VulkanDevice;
             VkBufferCreateInfo bufferInfo = bufferCreateInfo(_flags, _size);
             bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
@@ -906,7 +914,7 @@ namespace Flow {
             #endif
         }
 
-        VkImageView createImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags) {
+        VkImageView create2dImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags) {
             VkImageViewCreateInfo viewInfo = {};
             viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             viewInfo.image = _image;
@@ -919,10 +927,195 @@ namespace Flow {
             viewInfo.subresourceRange.layerCount = 1;
 
             VkImageView imageview;
+            #ifdef NDEBUG
+            vkCreateImageView(VulkanDevice, &viewInfo, nullptr, &imageview);
+            #else
             if (vkCreateImageView(VulkanDevice, &viewInfo, nullptr, &imageview) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create texture image view!");
             }
+            #endif
             return imageview;
+        }
+
+        VkBufferUsageFlags reflectBufferUsage(SpvReflectDescriptorType _descriptorType) {
+            switch (_descriptorType) {
+                case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+                {
+                    return VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
+                }
+                case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+                {
+                    return VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+                }
+                case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+                {
+                    return VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+                }
+                case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+                {
+                    return VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+                }
+                case SPV_REFLECT_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+                {
+                    return VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+                }
+                case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+                {
+                    return VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+                }
+            }
+        }
+
+        VkImageUsageFlags reflectImageUsage(SpvReflectDescriptorType _descriptorType) {
+            switch (_descriptorType) {
+                case SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLER:
+                    return VK_IMAGE_USAGE_SAMPLED_BIT;
+                case SPV_REFLECT_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+                    return VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT;
+                case SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+                    return VK_IMAGE_USAGE_SAMPLED_BIT;
+                case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+                    return VK_IMAGE_USAGE_STORAGE_BIT;
+            }
+        }
+
+        void reflect2DTexture(const std::string &_filename, VulkanImageMaterialUnit *_materialUnit) {
+            int texWidth, texHeight, texChannels;
+            if (!file::fileExists(_filename)) {
+                throwFile(_filename);
+            }
+            stbi_uc *pixels = stbi_load(_filename.c_str(),
+                                        &texWidth,
+                                        &texHeight,
+                                        &texChannels,
+                                        STBI_rgb_alpha);
+            VkDeviceSize imageSize = texWidth * texHeight * 4;
+            VkBuffer stagingBuffer;
+            VkDeviceMemory stagingBufferMemory;
+            createBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                         stagingBuffer,
+                         stagingBufferMemory,
+                         imageSize);
+            void *data;
+            VkDevice device = VulkanDevice;
+            vkMapMemory(device, stagingBufferMemory, 0, imageSize, 0, &data);
+            memcpy(data, pixels, static_cast<size_t>(imageSize));
+            vkUnmapMemory(device, stagingBufferMemory);
+            stbi_image_free(pixels);
+
+            create2dImage(texWidth,
+                          texHeight,
+                          VK_FORMAT_R8G8B8A8_UNORM,
+                          VK_IMAGE_TILING_OPTIMAL,
+                          VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                          _materialUnit->image,
+                          _materialUnit->memory);
+
+            auto cb = VulkanContext->beginSingleCommandBuffer();
+
+            setImageLayout(cb,
+                           _materialUnit->image,
+                           VK_IMAGE_ASPECT_COLOR_BIT,
+                           VK_IMAGE_LAYOUT_UNDEFINED,
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+            copyBufferToImage(cb,
+                              stagingBuffer,
+                              _materialUnit->image,
+                              static_cast<uint32_t>(texWidth),
+                              static_cast<uint32_t>(texHeight));
+
+            setImageLayout(cb,
+                           _materialUnit->image,
+                           VK_IMAGE_ASPECT_COLOR_BIT,
+                           VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                           VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            VulkanContext->endSingleCommandBuffer(cb);
+
+            _materialUnit->imageView = create2dImageView(_materialUnit->image,
+                                                         VK_FORMAT_R8G8B8A8_UNORM,
+                                                         VK_IMAGE_ASPECT_COLOR_BIT);
+
+            vkDestroyBuffer(device, stagingBuffer, nullptr);
+            vkFreeMemory(device, stagingBufferMemory, nullptr);
+
+            VkDescriptorImageInfo imageInfo{VulkanSampler,
+                                            _materialUnit->imageView,
+                                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
+            VkWriteDescriptorSet writeSet = tool::writeDescriptorSet(_materialUnit->set->set,
+                                                                     VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                                                                     _materialUnit->binding,
+                                                                     &imageInfo);
+            vkUpdateDescriptorSets(device,
+                                   1,
+                                   &writeSet,
+                                   0,
+                                   nullptr);
+        }
+
+        void create2dImage(uint32_t _width, uint32_t _height, VkFormat _format, VkImageTiling _tiling,
+                           VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage &_image,
+                           VkDeviceMemory &_imageMemory) {
+            VkImageCreateInfo imageInfo = {};
+            imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageInfo.imageType = VK_IMAGE_TYPE_2D;
+            imageInfo.extent.width = _width;
+            imageInfo.extent.height = _height;
+            imageInfo.extent.depth = 1;
+            imageInfo.mipLevels = 1;
+            imageInfo.arrayLayers = 1;
+            imageInfo.format = _format;
+            imageInfo.tiling = _tiling;
+            imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            imageInfo.usage = _usage;
+            imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+            imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+            VkDevice device = VulkanDevice;
+            #ifdef NDEBUG
+            vkCreateImage(device, &imageInfo, nullptr, &_image);
+            #else
+            if (vkCreateImage(device, &imageInfo, nullptr, &_image) != VK_SUCCESS) {
+                FlowError(failed to create image!);
+            }
+            #endif
+            VkMemoryRequirements memRequirements;
+            vkGetImageMemoryRequirements(device, _image, &memRequirements);
+
+            auto memoryProperties = VulkanPhysicalDeviceMemoryProperties;
+            VkMemoryAllocateInfo allocInfo = {};
+            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            allocInfo.allocationSize = memRequirements.size;
+            allocInfo.memoryTypeIndex = getMemoryType(memRequirements.memoryTypeBits, _properties);
+
+            #ifdef NDEBUG
+            vkAllocateMemory(device, &allocInfo, nullptr, &_imageMemory);
+            #else
+            if (vkAllocateMemory(device, &allocInfo, nullptr, &_imageMemory) != VK_SUCCESS) {
+                throw std::runtime_error("failed to allocate image memory!");
+            }
+            #endif
+            vkBindImageMemory(device, _image, _imageMemory, 0);
+        }
+
+        void copyBufferToImage(VkCommandBuffer _cb, VkBuffer _buffer, VkImage _image, uint32_t _width, uint32_t _height) {
+            VkBufferImageCopy region = {};
+            region.bufferOffset = 0;
+            region.bufferRowLength = 0;
+            region.bufferImageHeight = 0;
+            region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            region.imageSubresource.mipLevel = 0;
+            region.imageSubresource.baseArrayLayer = 0;
+            region.imageSubresource.layerCount = 1;
+            region.imageOffset = {0, 0, 0};
+            region.imageExtent = {
+                    _width,
+                    _height,
+                    1
+            };
+            vkCmdCopyBufferToImage(_cb, _buffer, _image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
         }
 
     }
