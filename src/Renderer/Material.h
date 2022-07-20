@@ -21,7 +21,6 @@ namespace Flow {
     struct MaterialUnit{
         std::string name;
         ResourceType type;
-        virtual void bindFile(const std::string& _filename) = 0;
     };
 
     struct MaterialSet{

@@ -865,6 +865,44 @@ namespace Flow{
         }
     }
 
+    static void DestroyDebugReportCallbackEXT(VkInstance instance,
+                                       VkDebugReportCallbackEXT callback,
+                                       const VkAllocationCallbacks *pAllocator) {
+        auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance,
+                                                                                "vkDestroyDebugReportCallbackEXT");
+        if (func != nullptr) {
+            func(instance, callback, pAllocator);
+        }
+    }
+
+    VulkanRendererContext::~VulkanRendererContext() {
+        VkDevice device{};
+        VkInstance instance{};
+
+        vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+        vkDestroyCommandPool(device, graphicCP, nullptr);
+        vkDestroyCommandPool(device, computeCP, nullptr);
+        vkDestroyCommandPool(device, transferCP, nullptr);
+        vkDestroySampler(device,linearSampler, nullptr);
+        vkDestroyRenderPass(device, renderPass, nullptr);
+
+        vkDestroyDevice(device, nullptr);
+        DestroyDebugReportCallbackEXT(instance, callback, nullptr);
+        vkDestroySurfaceKHR(instance, surface, nullptr);
+        vkDestroyInstance(instance, nullptr);
+    }
+
+    VkCommandPool VulkanRendererContext::getCBPool(CBType _type) {
+        switch (_type) {
+            case CBType::Graphics:
+                return graphicCP;
+            case CBType::Compute:
+                return computeCP;
+            case CBType::Transfer:
+                return transferCP;
+        }
+    }
+
 
 }
 

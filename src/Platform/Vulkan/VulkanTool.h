@@ -36,6 +36,8 @@ namespace Flow {
 
     struct VulkanImageMaterialUnit;
 
+    struct VulkanBufferMaterialUnit;
+
     namespace tool{
         std::string combine(const std::string& _str,int num);
 
@@ -266,6 +268,8 @@ namespace Flow {
         VkImageUsageFlags reflectImageUsage(SpvReflectDescriptorType _descriptorType);
 
         void createBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
+
+        void copyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size);
 
         VkImageView create2dImageView(VkImage _image, VkFormat _format, VkImageAspectFlagBits _aspectFlags);
 

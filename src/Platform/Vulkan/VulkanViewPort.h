@@ -21,6 +21,8 @@ namespace Flow {
         VulkanViewPort() = default;
         VulkanViewPort(UP(VulkanViewPortSpec) _spec);
         void init();
+    private:
+        VkViewport viewPort;
     };
 
 } // Flow

@@ -48,6 +48,12 @@ namespace Flow{
         Transfer
     };
 
+    enum class CBType{
+        Graphics,
+        Compute,
+        Transfer,
+    };
+
     struct QueueFamilyIndices {
         int graphicsFamily = -1, presentFamily = -1, computeFamily = -1, transferFamily = -1;
         bool complete() const { return graphicsFamily >= 0 && presentFamily >= 0 && computeFamily >= 0 && transferFamily >= 0;}
@@ -57,6 +63,7 @@ namespace Flow{
     public:
         VulkanRendererContext(Window* _window);
         DisableCopy(VulkanRendererContext);
+        ~VulkanRendererContext() override;
     private:
         void init();
     public:
@@ -69,6 +76,7 @@ namespace Flow{
         VkRenderPass getRenderPass() {return renderPass;}
         void endSingleCommandBuffer(VkCommandBuffer _cmd);
         VkQueue getQueue(QueueType _type);
+        VkCommandPool getCBPool(CBType _type);
         VkInstance getInstance() {return instance;};
         QueueFamilyIndices& getIndices() {return queueIndices;}
         VkDescriptorPool& getDescriptorPool() {return descriptorPool;}

@@ -14,7 +14,6 @@ class Scene;
 
     class Renderer {
     public:
-        virtual bool init() = 0;
         virtual void render(Scene* scene) = 0;
         virtual void attachFrameBuffer(FrameBuffer* frameBuffer) = 0;
     };

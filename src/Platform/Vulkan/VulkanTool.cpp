@@ -1118,6 +1118,16 @@ namespace Flow {
             vkCmdCopyBufferToImage(_cb, _buffer, _image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
         }
 
+        void copyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size) {
+            auto cb = VulkanContext->beginSingleCommandBuffer();
+
+            VkBufferCopy copyRegion = {};
+            copyRegion.size = _size;
+            vkCmdCopyBuffer(cb, _src, _dst, 1, &copyRegion);
+
+            VulkanContext->endSingleCommandBuffer(cb);
+        }
+
     }
 
 
