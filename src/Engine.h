@@ -16,6 +16,8 @@ namespace Flow {
         void init();
         void update();
 
+    private:
+
     };
 
 } // Flow

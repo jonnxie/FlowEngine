@@ -81,8 +81,8 @@ namespace Flow{
         QueueFamilyIndices& getIndices() {return queueIndices;}
         VkDescriptorPool& getDescriptorPool() {return descriptorPool;}
         VkSampler& getLinearSampler() {return linearSampler;}
-        uint32_t getSwapChainCount() {return swapchainCount;}
-        uint32_t getMinSwapChainCount() {return minSwapchainCount;}
+        uint32_t getSwapChainCount() const {return swapchainCount;}
+        uint32_t getMinSwapChainCount() const {return minSwapchainCount;}
         void allocateDescriptorSet(VkDescriptorSetLayout _setLayout, VkDescriptorSet* _set);
     private:
         void createInstance();
@@ -100,6 +100,7 @@ namespace Flow{
         void createDescriptorPool();
         void createPresentFrameBuffers();
         void createLinearSampler();
+        void createSemaphores();
         bool checkPhysicalDevice(VkPhysicalDevice _physicalDevice);
         bool checkValidationLayerSupport();
         bool checkExtensionSupport(VkPhysicalDevice _physicalDevice);
@@ -129,6 +130,7 @@ namespace Flow{
         uint32_t swapchainCount{};
         uint32_t minSwapchainCount{};
         VkRenderPass renderPass{};
+        VkSemaphore imageAvailableSemaphore;
         struct VkPresent {
             VkImage image;
             VkImageView imageView;

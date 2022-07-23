@@ -78,7 +78,8 @@ namespace Flow
             for (int i = 0; i < m_thread_count; ++i) {
                 addTask([&, i](){
                     for (int j = 0; j < indexPairs[i].second; ++j) {
-                        _task(_vec[j + indexPairs[i].first], j + indexPairs[i].first);
+                        size_t index = j + indexPairs[i].first;
+                        _task(_vec[index], index);
                     }
                 });
             }
