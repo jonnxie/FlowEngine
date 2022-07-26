@@ -26,6 +26,8 @@ namespace Flow{
 
     class VulkanFrameBuffer;
 
+    class VulkanRenderer;
+
     const std::vector<const char *> validationLayers = {
             "VK_LAYER_RENDERDOC_Capture",
             "VK_LAYER_KHRONOS_validation",
@@ -72,9 +74,9 @@ namespace Flow{
         VkPhysicalDeviceMemoryProperties getPhysicalDeviceMemoryProperties() {return physicalDeviceMemoryProperties;}
         VkFormat getSwapChainFormat() {return swapChainFormat;}
         void saveScreenshot(std::basic_string<char> _filename) override;
-        VkCommandBuffer beginSingleCommandBuffer();
+        VkCommandBuffer beginSingleCommandBuffer(CBType _type = CBType::Graphics);
         VkRenderPass getRenderPass() {return renderPass;}
-        void endSingleCommandBuffer(VkCommandBuffer _cmd);
+        void endSingleCommandBuffer(VkCommandBuffer _cmd, CBType _type = CBType::Graphics);
         VkQueue getQueue(QueueType _type);
         VkCommandPool getCBPool(CBType _type);
         VkInstance getInstance() {return instance;};
@@ -84,6 +86,8 @@ namespace Flow{
         uint32_t getSwapChainCount() const {return swapchainCount;}
         uint32_t getMinSwapChainCount() const {return minSwapchainCount;}
         void allocateDescriptorSet(VkDescriptorSetLayout _setLayout, VkDescriptorSet* _set);
+        VulkanRenderer* getRenderer() {return renderer;}
+        void setRenderer(VulkanRenderer* _renderer) { renderer = _renderer;}
     private:
         void createInstance();
         void setDebugCallback();
@@ -138,6 +142,7 @@ namespace Flow{
             VkFramebuffer framebuffer;
         };
         std::vector<VkPresent> m_presents{};
+        VulkanRenderer* renderer;
     };
 
 #define VulkanDevice (*(VulkanRendererContext*)RendererContext::get().get())

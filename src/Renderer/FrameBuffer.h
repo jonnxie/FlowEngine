@@ -10,6 +10,8 @@
 #include <memory>
 #include "FormatFilter.hpp"
 #include "Macro/Macro.h"
+#include "Renderer.h"
+
 
 namespace Flow{
 

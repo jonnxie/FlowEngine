@@ -10,6 +10,7 @@ namespace Flow {
     class Scene;
 
     class Computer {
+    public:
         virtual void compute(Scene* scene) = 0;
     };
 

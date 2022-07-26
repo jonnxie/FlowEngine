@@ -28,7 +28,7 @@ namespace Flow{
     }
 
     VulkanRendererContext::VulkanRendererContext(Window* _window) : RendererContext(_window){
-
+        init();
     }
 
     void VulkanRendererContext::saveScreenshot(std::basic_string<char> _filename) {
@@ -238,12 +238,82 @@ namespace Flow{
         vkDestroyImage(VulkanDevice, dstImage, nullptr);
     }
 
-    VkCommandBuffer VulkanRendererContext::beginSingleCommandBuffer() {
-        return VK_NULL_HANDLE;
+    VkCommandBuffer VulkanRendererContext::beginSingleCommandBuffer(CBType _type) {
+        VkCommandPool pool;
+        switch (_type) {
+            case CBType::Graphics:
+            {
+                pool = graphicCP;
+                break;
+            }
+            case CBType::Compute:
+            {
+                pool = computeCP;
+                break;
+            }
+            case CBType::Transfer:
+            {
+                pool = transferCP;
+                break;
+            }
+        }
+        VkCommandBufferAllocateInfo allocInfo = {};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = pool;
+        allocInfo.commandBufferCount = 1;
+
+        VkCommandBuffer commandBuffer;
+        #ifdef NDEBUG
+        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+        #else
+        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
+        {
+            FlowError(Failed to allocate command buffer);
+        }
+        #endif
+
+        VkCommandBufferBeginInfo beginInfo = {};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+        vkBeginCommandBuffer(commandBuffer, &beginInfo);
     }
 
-    void VulkanRendererContext::endSingleCommandBuffer(VkCommandBuffer _cmd) {
+    void VulkanRendererContext::endSingleCommandBuffer(VkCommandBuffer _cmd, CBType _type) {
+        vkEndCommandBuffer(_cmd);
 
+        VkSubmitInfo submitInfo = {};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &_cmd;
+
+        VkQueue queue;
+        VkCommandPool pool;
+        switch (_type) {
+            case CBType::Graphics:
+            {
+                queue = graphicsQueue;
+                pool = graphicCP;
+                break;
+            }
+            case CBType::Compute:
+            {
+                queue = computeQueue;
+                pool = computeCP;
+                break;
+            }
+            case CBType::Transfer:
+            {
+                queue = transferQueue;
+                pool = transferCP;
+                break;
+            }
+        }
+        vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(queue);
+
+        vkFreeCommandBuffers(device, pool, 1, &_cmd);
     }
 
     void VulkanRendererContext::init() {

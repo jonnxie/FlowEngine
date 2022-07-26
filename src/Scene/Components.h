@@ -5,6 +5,7 @@
 #ifndef FLOWENGINE_COMPONENTS_H
 #define FLOWENGINE_COMPONENTS_H
 
+#include <utility>
 #include "IDManager.h"
 
 namespace Flow{
@@ -31,7 +32,7 @@ namespace Flow{
     struct Tag{
         std::string tag;
         Default(Tag);
-        Tag(const std::string& _tag) : tag(_tag){}
+        Tag(std::string  _tag) : tag(std::move(_tag)){}
         operator const std::string& () const {return tag;}
     };
 

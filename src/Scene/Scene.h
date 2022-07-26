@@ -19,6 +19,12 @@ namespace Flow {
         entt::registry& get(){return registry;};
         uint64_t getSceneID() {return 0;};
         Object* getObjectWithID(uint64_t _id);
+
+        template<typename... Components>
+        auto GetAllObjectsWith()
+        {
+            return registry.view<Components...>();
+        }
     private:
         std::vector<SP(ViewPort)> viewports;
         ObjectMap objectMap;

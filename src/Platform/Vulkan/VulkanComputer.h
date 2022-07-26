@@ -7,8 +7,13 @@
 
 #include <vulkan/vulkan.h>
 #include "Compute/Computer.h"
+#include "Macro/Macro.h"
+#include <vector>
+#include <memory>
 
 namespace Flow {
+
+    class ThreadPool;
 
     class VulkanComputer : public Computer{
     public:
@@ -18,8 +23,14 @@ namespace Flow {
     private:
         void init();
         void createComputeCB();
+        void createSemaphore();
+        void createThreadPool();
+        void createMultiThreadCMDPool();
     private:
-        VkCommandBuffer computeCB;
+        VkCommandBuffer computeCB{};
+        VkSemaphore computeFinishedSemaphore{};
+        std::vector<VkCommandPool> computeCMDPools;
+        UP(ThreadPool) threadPool;
     };
 
 } // Flow

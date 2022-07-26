@@ -70,16 +70,16 @@ namespace Flow
         void allocateExecuteArray(size_t _taskCount, std::vector<IndexPair>& _array);
 
         template<class Item>
-        void executeVector(std::vector<Item>& _vec, std::function<void(Item&,size_t)> _task)
+        void executeVector(std::vector<Item>& _vec, std::function<void(Item&,size_t, size_t)> _task)
         {
             size_t taskCount = _vec.size();
             std::vector<IndexPair> indexPairs;
             allocateExecuteArray(taskCount, indexPairs);
-            for (int i = 0; i < m_thread_count; ++i) {
+            for (size_t i = 0; i < m_thread_count; ++i) {
                 addTask([&, i](){
                     for (int j = 0; j < indexPairs[i].second; ++j) {
                         size_t index = j + indexPairs[i].first;
-                        _task(_vec[index], index);
+                        _task(_vec[index], index, i);
                     }
                 });
             }

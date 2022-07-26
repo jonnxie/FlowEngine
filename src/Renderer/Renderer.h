@@ -6,16 +6,28 @@
 #define FLOWENGINE_RENDERER_H
 
 #include <vector>
-
+#include "Macro/Macro.h"
+#include <memory>
 namespace Flow {
 
 class FrameBuffer;
 class Scene;
 
+    enum class RenderMode{
+        SingleThread,
+        MultiThread
+    };
+
     class Renderer {
+    public:
+        static SP(Renderer) createRender();
     public:
         virtual void render(Scene* scene) = 0;
         virtual void attachFrameBuffer(FrameBuffer* frameBuffer) = 0;
+    public:
+        void setRenderMode(RenderMode _mode) { renderMode = _mode;}
+    protected:
+        RenderMode renderMode{};
     };
 
 } // Flow
