@@ -23,8 +23,7 @@ namespace Flow {
     {
     }
 
-    void VulkanRenderComponent::bindThread(uint32_t _threadIndex) {
-        auto renderer = VulkanContext->getRenderer();
-        renderer->allocateCommandBuffer(_threadIndex, &cmb);
+    void VulkanRenderComponent::bindMaterial(Material *_mat) {
+
     }
 } // Flow

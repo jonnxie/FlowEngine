@@ -77,7 +77,8 @@ namespace Flow
             allocateExecuteArray(taskCount, indexPairs);
             for (size_t i = 0; i < m_thread_count; ++i) {
                 addTask([&, i](){
-                    for (int j = 0; j < indexPairs[i].second; ++j) {
+                    for (int j = 0; j < indexPairs[i].second; ++j)
+                    {
                         size_t index = j + indexPairs[i].first;
                         _task(_vec[index], index, i);
                     }

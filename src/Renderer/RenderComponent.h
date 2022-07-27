@@ -12,6 +12,8 @@
 
 namespace Flow {
 
+    class Material;
+
     class RenderComponent {
     public:
         static SP(RenderComponent) createRenderComponent();
@@ -21,6 +23,7 @@ namespace Flow {
         explicit RenderComponent(std::function<void(RenderComponent*)> _renderFunction):renderFunction(std::move(_renderFunction)){};
     public:
         virtual void drawIndex(size_t _count, size_t _offset) = 0;
+        virtual void bindMaterial(Material* _mat) = 0;
         void operator()(RenderComponent* _component) {
             renderFunction(_component);
         }

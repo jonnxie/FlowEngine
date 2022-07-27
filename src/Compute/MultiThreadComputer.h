@@ -13,7 +13,6 @@ namespace Flow {
     class MultiThreadComputer : public Computer{
     public:
         void compute(Scene* scene) override;
-
     };
 
 } // Flow

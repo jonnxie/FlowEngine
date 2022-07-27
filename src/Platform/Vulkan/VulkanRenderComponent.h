@@ -7,16 +7,17 @@
 
 #include <vulkan/vulkan.h>
 #include "Renderer/RenderComponent.h"
+#include "VulkanComponent.h"
 
 namespace Flow {
 
-    class VulkanRenderComponent : public RenderComponent{
+    class VulkanRenderComponent : public RenderComponent,public VulkanComponent{
     public:
         explicit VulkanRenderComponent(std::function<void(RenderComponent*)> _renderFunction);
         ~VulkanRenderComponent() override;
     public:
-        void bindThread(uint32_t _threadIndex);
         void drawIndex(size_t _count, size_t _offset) override;
+        void bindMaterial(Material* _mat) override;
     private:
         VkCommandBuffer cmb{};
     };

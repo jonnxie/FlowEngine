@@ -28,6 +28,8 @@ namespace Flow{
 
     class VulkanRenderer;
 
+    class VulkanComputer;
+
     const std::vector<const char *> validationLayers = {
             "VK_LAYER_RENDERDOC_Capture",
             "VK_LAYER_KHRONOS_validation",
@@ -88,6 +90,8 @@ namespace Flow{
         void allocateDescriptorSet(VkDescriptorSetLayout _setLayout, VkDescriptorSet* _set);
         VulkanRenderer* getRenderer() {return renderer;}
         void setRenderer(VulkanRenderer* _renderer) { renderer = _renderer;}
+        VulkanComputer* getComputer() {return computer;}
+        void setComputer(VulkanComputer* _computer) { computer = _computer;}
     private:
         void createInstance();
         void setDebugCallback();
@@ -143,6 +147,7 @@ namespace Flow{
         };
         std::vector<VkPresent> m_presents{};
         VulkanRenderer* renderer;
+        VulkanComputer* computer;
     };
 
 #define VulkanDevice (*(VulkanRendererContext*)RendererContext::get().get())

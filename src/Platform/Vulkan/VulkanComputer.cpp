@@ -5,10 +5,23 @@
 #include "VulkanComputer.h"
 #include "VulkanRendererContext.h"
 #include "Compute/threadpool.h"
+#include "VulkanComputerComponent.h"
+#include "Scene/Scene.h"
+#include "Scene/Object.h"
 
 namespace Flow {
     void VulkanComputer::compute(Scene *scene) {
-
+        auto view = scene->GetAllObjectsWith<VulkanComputerComponent>();
+        std::vector<VulkanComputerComponent*> components{};
+        for (auto& entityID : view)
+        {
+            Object Object = { entityID, scene };
+            components.push_back(&Object.getComponent<VulkanComputerComponent>());
+        }
+        threadPool->executeVector<VulkanComputerComponent*>(components, [](VulkanComputerComponent* _item,size_t _index, size_t _threadIndex){
+            _item->bindThread(_threadIndex, ComponentType::Compute);
+            (*_item)(_item);
+        });
     }
 
     VulkanComputer::~VulkanComputer() {
