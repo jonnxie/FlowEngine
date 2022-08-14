@@ -29,12 +29,16 @@ namespace Flow {
 
     class Material {
     public:
+        Material(const std::string _shaderFile);
+    public:
         void pushSet(UP(MaterialSet) _set) {
             sets.push_back(std::move(_set));
         }
+        std::vector<UP(MaterialSet)>& getSets() {return sets;}
+        Pipeline* getPipeline() {return  pipeline.get();}
     private:
         std::vector<UP(MaterialSet)> sets;
-
+        UP(Pipeline) pipeline;
     };
 
 } // Flow

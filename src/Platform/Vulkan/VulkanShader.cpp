@@ -395,7 +395,7 @@ namespace Flow {
                                     nullptr,
                                     &setLayout);
 
-        VulkanContext->allocateDescriptorSet(setLayout, &set->set());
+        VulkanContext->allocateDescriptorSet(setLayout, &set->set);
         vkDestroyDescriptorSetLayout(VulkanDevice, setLayout, nullptr);
         return std::move(set);
     }

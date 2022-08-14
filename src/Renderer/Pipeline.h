@@ -12,6 +12,9 @@ namespace Flow {
 
     class Pipeline {
     public:
+        static Pipeline* GeneratePipeline(const std::vector<std::string> _files);
+        virtual ~Pipeline(){};
+    public:
         virtual void bind() = 0;
     private:
         std::vector<SP(Shader)> shaders;

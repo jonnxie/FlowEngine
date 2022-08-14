@@ -7,6 +7,8 @@
 #include <utility>
 #include "VulkanRendererContext.h"
 #include "VulkanRenderer.h"
+#include "VulkanMaterial.h"
+#include "VulkanPipeline.h"
 
 namespace Flow {
     VulkanRenderComponent::~VulkanRenderComponent() {
@@ -24,6 +26,14 @@ namespace Flow {
     }
 
     void VulkanRenderComponent::bindMaterial(Material *_mat) {
+        auto& sets = _mat->getSets();
+        for (size_t i = 0; i < sets.size(); ++i) {
+            bindMaterialSet(i, dynamic_cast<VulkanPipeline*>(_mat->getPipeline()),
+                            static_cast<VulkanMaterialSet*>(sets[i].get()));
+        }
+    }
 
+    void VulkanRenderComponent::bindMaterialSet(uint32_t _index, VulkanPipeline* _pipeline, VulkanMaterialSet* _set) {
+        vkCmdBindDescriptorSets(cmb, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline->getLayout(), _index, 1, &_set->set, 0, nullptr);
     }
 } // Flow

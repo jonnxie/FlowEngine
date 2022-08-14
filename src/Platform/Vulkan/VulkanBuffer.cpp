@@ -29,7 +29,7 @@ namespace Flow {
 #ifdef NDEBUG
             vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped);
 #else
-            FlowCheckVulkan(vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped));
+            VK_CHECK_RESULT(vkMapMemory(VulkanDevice, memory, offset, size, 0, &mapped));
 #endif
         }
     }

@@ -14,7 +14,8 @@
 namespace Flow {
 
     struct VulkanMaterialSet : MaterialSet{
-        VulkanSmartHandle<VkDescriptorSet> set{VK_NULL_HANDLE};
+        operator VkDescriptorSet() const {return set;};
+        VkDescriptorSet set{VK_NULL_HANDLE};
     };
 
     struct VulkanMaterialUnit : MaterialUnit{

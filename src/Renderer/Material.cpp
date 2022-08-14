@@ -5,4 +5,7 @@
 #include "Material.h"
 
 namespace Flow {
+    Material::Material(const std::string _shaderFile) {
+
+    }
 } // Flow
