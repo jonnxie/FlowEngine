@@ -22,6 +22,7 @@ namespace Flow {
         explicit ComputerComponent(std::function<void(ComputerComponent*)> _computeFunction): computeFunction(std::move(_computeFunction)){};
     public:
         virtual void bindMaterial(Material* _mat) = 0;
+        virtual void dispatch(uint32_t _xCount, uint32_t _yCount, uint32_t _zCount) = 0;
         void operator()(ComputerComponent* _component) {
             computeFunction(_component);
         }

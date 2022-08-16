@@ -4,17 +4,26 @@
 
 #include "VulkanComputerComponent.h"
 
+#include <utility>
+#include "VulkanPipeline.h"
+#include "VulkanMaterial.h"
+
 namespace Flow {
     void VulkanComputerComponent::bindMaterial(Material *_mat) {
-
+        VulkanComponent::bindMaterial(_mat, ComponentType::Compute);
     }
 
     VulkanComputerComponent::VulkanComputerComponent(std::function<void(ComputerComponent *)> _renderFunction)
-            : ComputerComponent(_renderFunction) {
+            : ComputerComponent(std::move(_renderFunction)) {
 
     }
 
-    VulkanComputerComponent::~VulkanComputerComponent() {
+    VulkanComputerComponent::~VulkanComputerComponent()
+    {
 
+    }
+
+    void VulkanComputerComponent::dispatch(uint32_t _xCount, uint32_t _yCount, uint32_t _zCount) {
+        vkCmdDispatch(cmb, _xCount, _yCount, _zCount);
     }
 } // Flow

@@ -21,10 +21,9 @@ namespace Flow {
         ~VulkanRenderComponent() override;
     public:
         void drawIndex(size_t _count, size_t _offset) override;
+        void draw(size_t _count, size_t _offset) override;
         void bindMaterial(Material* _mat) override;
 
-    private:
-        void bindMaterialSet(uint32_t _index, VulkanPipeline* _pipeline, VulkanMaterialSet* _set);
     private:
         VkCommandBuffer cmb{};
     };

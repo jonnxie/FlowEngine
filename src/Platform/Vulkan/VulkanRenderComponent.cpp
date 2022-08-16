@@ -12,8 +12,7 @@
 
 namespace Flow {
     VulkanRenderComponent::~VulkanRenderComponent() {
-        auto pool = VulkanContext->getCBPool(CBType::Graphics);
-        vkFreeCommandBuffers(VulkanDevice, pool, 1, &cmb);
+
     }
 
     void VulkanRenderComponent::drawIndex(size_t _count, size_t _offset) {
@@ -26,14 +25,10 @@ namespace Flow {
     }
 
     void VulkanRenderComponent::bindMaterial(Material *_mat) {
-        auto& sets = _mat->getSets();
-        for (size_t i = 0; i < sets.size(); ++i) {
-            bindMaterialSet(i, dynamic_cast<VulkanPipeline*>(_mat->getPipeline()),
-                            static_cast<VulkanMaterialSet*>(sets[i].get()));
-        }
+        VulkanComponent::bindMaterial(_mat, ComponentType::Render);
     }
 
-    void VulkanRenderComponent::bindMaterialSet(uint32_t _index, VulkanPipeline* _pipeline, VulkanMaterialSet* _set) {
-        vkCmdBindDescriptorSets(cmb, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline->getLayout(), _index, 1, &_set->set, 0, nullptr);
+    void VulkanRenderComponent::draw(size_t _count, size_t _offset) {
+        vkCmdDraw(cmb, _count, 1, _offset, 0);
     }
 } // Flow
