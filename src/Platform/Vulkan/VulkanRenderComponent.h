@@ -6,7 +6,7 @@
 #define FLOWENGINE_VULKANRENDERCOMPONENT_H
 
 #include <vulkan/vulkan.h>
-#include "Renderer/RenderComponent.h"
+#include "Render/RenderComponent.h"
 #include "VulkanComponent.h"
 
 namespace Flow {

@@ -27,4 +27,12 @@ namespace Flow {
             }
         }
     }
+
+    VulkanMaterial::VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {
+        for (const auto &item: _shaderFiles) {
+            auto shader = Shader::createShader(item.first, item.first, item.second);
+            shader->reflectMaterial(*this);
+            shaders.emplace_back(shader);
+        }
+    }
 } // Flow

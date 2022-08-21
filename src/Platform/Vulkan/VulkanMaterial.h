@@ -6,7 +6,7 @@
 #define FLOWENGINE_VULKANMATERIAL_H
 
 #include <vulkan/vulkan.h>
-#include "Renderer/Material.h"
+#include "Render/Material.h"
 #include "VulkanSmartHandle.h"
 #include "VulkanTool.h"
 
@@ -80,6 +80,15 @@ namespace Flow {
         VkImageUsageFlags imageUsageFlags;
         void bindFile(const std::string& _filename, uint32_t _resourceType);
     };
+
+    class VulkanMaterial : public Material{
+    public:
+        VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
+
+    private:
+        std::vector<SP(Shader)> shaders;
+    };
+
 
 } // Flow
 

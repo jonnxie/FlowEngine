@@ -23,7 +23,7 @@ _(you may also go to Demo>About Window, and click "Config/Build Information" to 
 Version: XXX
 Branch: XXX _(master/viewport/docking/etc.)_
 
-**Back-end/Renderer/Compiler/OS**
+**Back-end/Render/Compiler/OS**
 
 Back-ends: imgui_impl_XXX.cpp + imgui_impl_XXX.cpp _(or specify if using a custom engine/back-end)_
 Compiler: XXX _(if the question is related to building or platform specific features)_

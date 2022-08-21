@@ -5,7 +5,7 @@
 #ifndef FLOWENGINE_VULKANPIPELINE_H
 #define FLOWENGINE_VULKANPIPELINE_H
 
-#include "Renderer/Pipeline.h"
+#include "Render/Pipeline.h"
 #include "VulkanSmartHandle.h"
 
 namespace Flow {

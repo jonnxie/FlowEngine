@@ -6,7 +6,7 @@
 #define FLOWENGINE_VULKANSHADER_H
 
 #include <vulkan/vulkan.h>
-#include "Renderer/Shader.h"
+#include "Render/Shader.h"
 #include <vector>
 #include "spirv_reflect.h"
 #include "VulkanMaterial.h"
@@ -19,7 +19,7 @@ namespace Flow {
         void reflectMaterial(Material& material) const override;
         const VkPipelineShaderStageCreateInfo& getInfo() { return shaderInfo;};
         ~VulkanShader() override;
-    private:
+    public:
         UP(VulkanMaterialSet) reflectMaterialSet(const SpvReflectDescriptorSet& _set) const;
     private:
         std::vector<VkDescriptorSetLayout> setLayouts{};

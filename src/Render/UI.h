@@ -6,10 +6,15 @@
 #define FLOWENGINE_UI_H
 
 #include <cstdint>
+#include "Macro/Macro.h"
 
 namespace Flow {
 
+    class Window;
+
     class UI {
+    public:
+        static SP(UI) createUI(Window *_window);
     public:
         virtual bool init() = 0;
         virtual void update() = 0;

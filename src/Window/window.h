@@ -26,7 +26,7 @@ namespace Flow{
         std::pair<int, int> operator()() {
             return std::make_pair(width, height);
         }
-    protected:
+    public:
         virtual void update();
         ClassProtectedReferenceElement(events, std::vector<Event>, Events);
     private:
