@@ -966,6 +966,28 @@ namespace Flow {
             }
         }
 
+        VkDescriptorType reflectBufferDescriptorType(VkBufferUsageFlags _usage)
+        {
+            switch (_usage) {
+                case VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+                }
+                case VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+                }
+                case VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+                }
+                case VK_BUFFER_USAGE_STORAGE_BUFFER_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+                }
+            }
+        }
+
         VkImageUsageFlags reflectImageUsage(SpvReflectDescriptorType _descriptorType) {
             switch (_descriptorType) {
                 case SPV_REFLECT_DESCRIPTOR_TYPE_SAMPLER:
@@ -976,6 +998,20 @@ namespace Flow {
                     return VK_IMAGE_USAGE_SAMPLED_BIT;
                 case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_IMAGE:
                     return VK_IMAGE_USAGE_STORAGE_BIT;
+            }
+        }
+
+        VkDescriptorType reflectImageDescriptorType(VkImageUsageFlags _usage)
+        {
+            switch (_usage) {
+                case VK_IMAGE_USAGE_SAMPLED_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+                }
+                case VK_IMAGE_USAGE_STORAGE_BIT:
+                {
+                    return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+                }
             }
         }
 

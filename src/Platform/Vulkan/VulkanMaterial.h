@@ -29,42 +29,61 @@ namespace Flow {
         VulkanSmartHandle<VkBuffer> buffer{VK_NULL_HANDLE};
         VkBufferUsageFlags bufferUsageFlags;
 
-        template<class T>
-        void bindFile(std::vector<T> _data, uint32_t _resourceType)
+        void bindData(void* _data, size_t _size)
         {
             VkBuffer stagingBuffer;
             VkDeviceMemory stagingBufferMemory;
-            size_t bufferSize = _data.size() * sizeof(T);
             VkDevice device = VulkanDevice;
             tool::createBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                stagingBuffer,
                                stagingBufferMemory,
-                               bufferSize);
+                               _size);
             void *data;
             vkMapMemory(device,
                         stagingBufferMemory,
                         0,
-                        bufferSize,
+                        _size,
                         0,
                         &data);
-            memset(data, 0, (size_t)bufferSize);
+            memset(data, 0, (size_t)_size);
             memcpy(data,
-                   _data.data(),
-                   bufferSize);
+                   _data,
+                   _size);
             vkUnmapMemory(device, stagingBufferMemory);
 
             tool::createBuffer(bufferUsageFlags |
-                         VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                         buffer,
-                         memory,
-                         bufferSize);
+                               VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                               VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                               buffer,
+                               memory,
+                               _size);
 
-            tool::copyBuffer(stagingBuffer, buffer, bufferSize);
+            tool::copyBuffer(stagingBuffer, buffer, _size);
 
             vkDestroyBuffer(device, stagingBuffer, nullptr);
             vkFreeMemory(device, stagingBufferMemory, nullptr);
+
+            VkDescriptorBufferInfo bufferInfo{
+                    buffer,
+                    0,
+                    _size
+            };
+            VkWriteDescriptorSet writeSet = tool::writeDescriptorSet(this->set->set,
+                                                                     tool::reflectBufferDescriptorType(bufferUsageFlags),
+                                                                     binding,
+                                                                     &bufferInfo);
+            vkUpdateDescriptorSets(device,
+                                   1,
+                                   &writeSet,
+                                   0,
+                                   nullptr);
+        }
+
+        template<class T>
+        void bindVector(std::vector<T> _data)
+        {
+            bindData(_data.data(), _data.size() * sizeof(T));
         };
     };
 

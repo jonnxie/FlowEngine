@@ -265,7 +265,11 @@ namespace Flow {
 
         VkBufferUsageFlags reflectBufferUsage(SpvReflectDescriptorType _descriptorType);
 
+        VkDescriptorType reflectBufferDescriptorType(VkBufferUsageFlags _usage);
+
         VkImageUsageFlags reflectImageUsage(SpvReflectDescriptorType _descriptorType);
+
+        VkDescriptorType reflectImageDescriptorType(VkImageUsageFlags _usage);
 
         void createBuffer(VkBufferUsageFlags _flags, VkMemoryPropertyFlags _property, VkBuffer& _buffer, VkDeviceMemory& _memory, uint64_t _size);
 
