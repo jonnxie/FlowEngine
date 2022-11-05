@@ -72,6 +72,7 @@ namespace Flow{
         void init();
     public:
         operator const VkDevice() {return device;}
+        VkDevice& getLogicalDevice() {return device;}
         VkPhysicalDevice getPhysicalDevice() {return physicalDevice;}
         VkPhysicalDeviceMemoryProperties getPhysicalDeviceMemoryProperties() {return physicalDeviceMemoryProperties;}
         VkFormat getSwapChainFormat() {return swapChainFormat;}
@@ -150,7 +151,7 @@ namespace Flow{
         VulkanComputer* computer;
     };
 
-#define VulkanDevice (*(VulkanRendererContext*)RendererContext::get().get())
+#define VulkanDevice ((VulkanRendererContext*)RendererContext::get().get())->getLogicalDevice()
 #define VulkanPhysicalDevice ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDevice()
 #define VulkanPhysicalDeviceMemoryProperties ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDeviceMemoryProperties()
 #define VulkanSwapChainFormat ((VulkanRendererContext*)RendererContext::get().get())->getSwapChainFormat()

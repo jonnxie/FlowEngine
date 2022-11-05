@@ -11,7 +11,7 @@
 #include "FormatFilter.hpp"
 #include "Macro/Macro.h"
 #include "Renderer.h"
-
+#include <string>
 
 namespace Flow{
 
@@ -33,10 +33,10 @@ namespace Flow{
         DisableCopy(FrameBuffer);
         virtual ~FrameBuffer()= default;
     public:
-        virtual void resize(uint32_t _width,uint32_t _height) = 0;
+        virtual void resize(uint32_t _width, uint32_t _height) = 0;
         virtual void release() = 0;
         virtual void releaseCaptureVals() = 0;
-
+        virtual void save(const std::string& _path, uint32_t _index) = 0;
     protected:
         UP(FrameBufferSpecification) m_spec;
     };

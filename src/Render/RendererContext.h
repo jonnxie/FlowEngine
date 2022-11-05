@@ -15,7 +15,7 @@ namespace Flow {
 
     class RendererContext {
     public:
-        RendererContext(Window* _window): window(_window){};
+        explicit RendererContext(Window* _window): window(_window){};
         virtual ~RendererContext() = default;
         static void createRenderContext(Window* _window);
         static SP(RendererContext) get();

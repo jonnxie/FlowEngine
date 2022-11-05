@@ -33,6 +33,7 @@ namespace Flow {
         void resize(uint32_t _width,uint32_t _height) final;
         void release() final;
         void releaseCaptureVals() final;
+        void save(const std::string& _path, uint32_t _index) final;
         std::vector<VkAttachment>& getAttachments() {return m_attachments;};
     private:
         std::unordered_map<VkFormat, std::pair<VkBuffer, VkDeviceMemory>> m_captureVals;

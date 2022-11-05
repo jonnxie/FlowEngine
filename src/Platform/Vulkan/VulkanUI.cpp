@@ -266,7 +266,7 @@ namespace Flow {
         imageInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        VulkanRendererContext &device = VulkanDevice;
+        VulkanRendererContext &device = *((VulkanRendererContext *) RendererContext::get().get());
         VK_CHECK_RESULT(vkCreateImage(device, &imageInfo, nullptr, &image()));
         VkMemoryRequirements memReqs;
         vkGetImageMemoryRequirements(device, image, &memReqs);
