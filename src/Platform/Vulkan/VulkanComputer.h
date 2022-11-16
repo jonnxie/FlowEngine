@@ -24,13 +24,11 @@ namespace Flow {
         void init();
         void createComputeCB();
         void createSemaphore();
-        void createThreadPool();
         void createMultiThreadCMDPool();
     private:
         VkCommandBuffer computeCB{};
         VkSemaphore computeFinishedSemaphore{};
         std::vector<VkCommandPool> computeCMDPools;
-        UP(ThreadPool) threadPool;
     };
 
 } // Flow

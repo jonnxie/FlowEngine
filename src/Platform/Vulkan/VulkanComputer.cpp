@@ -75,8 +75,4 @@ namespace Flow {
 #endif
         }
     }
-
-    void VulkanComputer::createThreadPool() {
-        threadPool = std::make_unique<ThreadPool>();
-    }
 } // Flow

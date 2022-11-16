@@ -3,6 +3,11 @@
 //
 
 #include "Computer.h"
+#include <memory>
+#include "threadpool.h"
 
 namespace Flow {
+    void Computer::createThreadPool() {
+        threadPool = std::make_unique<ThreadPool>();
+    }
 } // Flow

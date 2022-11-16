@@ -9,6 +9,8 @@
 #include <atomic>
 #include <mutex>
 #include <cstdint>
+#include <chrono>
+#include <ctime>
 #include "Window/window.h"
 #include "Macro/Macro.h"
 
@@ -17,6 +19,13 @@ namespace Flow {
     class Renderer;
     class Computer;
     class Scene;
+
+    typedef std::chrono::time_point<std::chrono::system_clock> time_point;
+
+    enum class ExecuteMode{
+        Infinite,
+        Limited,
+    };
 
     class Engine {
     public:
@@ -27,6 +36,11 @@ namespace Flow {
         void setWindow(SP(Window) _window);
         void setRenderer(SP(Renderer) _renderer);
         void setComputer(SP(Computer) _computer);
+        void setFPS(size_t _fps);
+        void setExecuteMode(ExecuteMode _mode);
+    protected:
+        void render();
+        void compute();
         void begin();
         void end();
     private:
@@ -35,6 +49,14 @@ namespace Flow {
         SP(Window) window;
         SP(Renderer) renderer;
         SP(Computer) computer;
+        size_t fps;
+        /*
+         * nanosecond
+         */
+        double timing;
+        ExecuteMode executeMode;
+        time_point startTime;
+        time_point endTime;
     };
 
 } // Flow

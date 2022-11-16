@@ -5,13 +5,28 @@
 #ifndef FLOWENGINE_COMPUTER_H
 #define FLOWENGINE_COMPUTER_H
 
+#include "Macro/Macro.h"
+
 namespace Flow {
 
     class Scene;
+    class ThreadPool;
+
+    enum class ComputeMode{
+        MultiThread,
+        VulkanSync
+    };
 
     class Computer {
     public:
         virtual void compute(Scene* scene) = 0;
+    public:
+        void setRenderMode(ComputeMode _mode) { computeMode = _mode;}
+    protected:
+        void createThreadPool();
+    protected:
+        ComputeMode computeMode{};
+        UP(ThreadPool) threadPool;
     };
 
 } // Flow

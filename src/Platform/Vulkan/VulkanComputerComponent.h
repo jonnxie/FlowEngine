@@ -13,7 +13,7 @@ namespace Flow {
 
     class VulkanComputerComponent : public ComputerComponent, public VulkanComponent{
     public:
-        explicit VulkanComputerComponent(std::function<void(ComputerComponent*)> _renderFunction);
+        explicit VulkanComputerComponent(std::function<void(ComputerComponent*)> _computeFunction);
         ~VulkanComputerComponent() override;
     public:
         void bindMaterial(Material* _mat) override;

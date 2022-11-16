@@ -13,8 +13,8 @@ namespace Flow {
         VulkanComponent::bindMaterial(_mat, ComponentType::Compute);
     }
 
-    VulkanComputerComponent::VulkanComputerComponent(std::function<void(ComputerComponent *)> _renderFunction)
-            : ComputerComponent(std::move(_renderFunction)) {
+    VulkanComputerComponent::VulkanComputerComponent(std::function<void(ComputerComponent *)> _computeFunction)
+            : ComputerComponent(std::move(_computeFunction)) {
 
     }
 

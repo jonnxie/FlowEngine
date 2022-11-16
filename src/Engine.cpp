@@ -5,6 +5,8 @@
 #include "Engine.h"
 
 #include <utility>
+#include <ctime>
+#include <thread>
 #include "Render/Renderer.h"
 #include "Compute/Computer.h"
 #include "Window/window.h"
@@ -18,9 +20,10 @@ namespace Flow {
     void Engine::update() {
         while (running)
         {
-            window->update();
-            renderer->render(scene.get());
-            computer->compute(scene.get());
+            begin();
+            compute();
+            render();
+            end();
         }
     }
 
@@ -42,9 +45,41 @@ namespace Flow {
 
     void Engine::begin() {
         running = true;
+        if (executeMode == ExecuteMode::Limited)
+        {
+            startTime = std::chrono::system_clock::now();
+        }
+        window->update();
     }
 
     void Engine::end() {
         running = false;
+        if (executeMode == ExecuteMode::Limited)
+        {
+            endTime = std::chrono::system_clock::now();
+            auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+            if (ms < timing)
+            {
+                auto time = std::chrono::microseconds(uint64_t(timing - ms));
+                std::this_thread::sleep_for(time);
+            }
+        }
+    }
+
+    void Engine::render() {
+        renderer->render(scene.get());
+    }
+
+    void Engine::compute() {
+        computer->compute(scene.get());
+    }
+
+    void Engine::setFPS(size_t _fps) {
+        fps = _fps;
+        timing = 1000.0f / double(_fps);
+    }
+
+    void Engine::setExecuteMode(ExecuteMode _mode) {
+        executeMode = _mode;
     }
 } // FlowEngine
