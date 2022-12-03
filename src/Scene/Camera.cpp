@@ -3,6 +3,7 @@
 //
 
 #include "Camera.h"
+#include "glm.hpp"
 
 namespace Flow {
     void Camera::setTarget(glm::vec3 _target) {
@@ -14,6 +15,17 @@ namespace Flow {
     }
 
     void Camera::generateVPMatrix(glm::mat4 *_matrix) {
+        glm::mat4 view = glm::lookAt(pos, target, up);
+        if (mode == CameraMode::Perspective)
+        {
+            glm::mat4 proj = glm::perspective(fovy, width/height, near, far);
+            proj[1][1] *= -1;
+            *_matrix = proj * view;
+        } else {
+            glm::mat4 ortho = glm::ortho(-width/2.0f, width/2.0f, -height/2.0f, height/2.0f, near, far);
+            ortho[1][1] *= -1;
+            *_matrix = ortho * view;
+        }
     }
 
     void Camera::setWH(float _width, float _height) {
@@ -24,5 +36,13 @@ namespace Flow {
     void Camera::setNF(float _near, float _far) {
         near = _near;
         far = _far;
+    }
+
+    void Camera::setCameraMode(CameraMode _mode) {
+        mode = _mode;
+    }
+
+    void Camera::setFovy(float _fovy) {
+        fovy = _fovy;
     }
 } // Flow
