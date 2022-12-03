@@ -45,7 +45,11 @@ namespace Flow {
         allocateInfo.commandPool = pool;
         allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
+#ifdef NDEBUG
         vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB);
+#else
+        VK_CHECK_RESULT(vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB));
+#endif
     }
 
     VulkanRenderer::VulkanRenderer() {
@@ -63,9 +67,7 @@ namespace Flow {
 #ifdef NDEBUG
         vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
 #else
-        if (vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS) {
-            FlowError(failed to create semaphores!);
-        }
+        VK_CHECK_RESULT(vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore));
 #endif
     }
 
