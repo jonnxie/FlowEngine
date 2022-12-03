@@ -15,6 +15,8 @@ namespace Flow {
 
     class ThreadPool;
 
+    class Camera;
+
     class VulkanRenderer : public Renderer{
     public:
         VulkanRenderer();
@@ -30,6 +32,7 @@ namespace Flow {
         void createSemaphore();
         void createThreadPool();
         void createMultiThreadCMDPool();
+        void bindCamera(Camera* _camera);
     private:
         VulkanRendererContext* context;
         VkCommandBuffer graphicsCB;

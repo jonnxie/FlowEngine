@@ -9,6 +9,7 @@
 #include "Compute/threadpool.h"
 #include "VulkanRenderComponent.h"
 #include "Scene/Object.h"
+#include "Scene/Camera.h"
 
 namespace Flow {
     void VulkanRenderer::init() {
@@ -106,5 +107,9 @@ namespace Flow {
         #else
         VK_CHECK_RESULT(vkAllocateCommandBuffers(VulkanDevice, &commandBufferAllocateInfo, _cmd));
         #endif
+    }
+
+    void VulkanRenderer::bindCamera(Camera* _camera) {
+
     }
 } // Flow
