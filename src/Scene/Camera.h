@@ -6,7 +6,7 @@
 #define FLOWENGINE_CAMERA_H
 
 #include "Macro/Macro.h"
-#include <glm.hpp>
+#include "glm.hpp"
 #include <gtc/matrix_transform.hpp>
 
 namespace Flow {
@@ -25,6 +25,7 @@ namespace Flow {
         void setNF(float _near, float _far);
         void setWH(float _width, float _height);
         void setFovy(float _fovy);
+        void setCameraMode(CameraMode _mode);
     private:
         void generateVPMatrix(glm::mat4* _matrix);
     private:

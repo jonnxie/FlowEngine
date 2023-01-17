@@ -38,7 +38,13 @@ namespace Flow {
         far = _far;
     }
 
+
+    void Camera::setCameraMode(CameraMode _mode) {
+        mode = _mode;
+    }
+
     void Camera::setFovy(float _fovy) {
         fovy = _fovy;
     }
+
 } // Flow
