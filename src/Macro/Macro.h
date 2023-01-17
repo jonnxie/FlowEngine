@@ -5,6 +5,9 @@
 #ifndef FLOWENGINE_MACRO_H
 #define FLOWENGINE_MACRO_H
 
+#define GLM_FORCE_RADIANS
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm.hpp>
 #include <string>
 #include <string_view>

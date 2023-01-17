@@ -8,11 +8,13 @@
 #include "Engine.h"
 #include "Window/window.h"
 
-#include "Scene/Scene.h"
-#include "Scene/Object.h"
-#include "Scene/Components.h"
-#include "Scene/Transform.h"
-#include "Scene/Camera.h"
+#include "Compute/threadpool.h"
+#include "Compute/MultiThreadComputer.h"
+#include "Compute/Computer.h"
+
+#include "Mesh/InstanceComponent.h"
+#include "Mesh/Mesh.h"
+#include "Mesh/Vertex.h"
 
 #include "Render/Renderer.h"
 #include "Render/RenderComponent.h"
@@ -23,8 +25,11 @@
 #include "Render/UIComponent.h"
 #include "Render/UI.h"
 
-#include "Compute/threadpool.h"
-#include "Compute/MultiThreadComputer.h"
-#include "Compute/Computer.h"
+#include "Scene/Scene.h"
+#include "Scene/Object.h"
+#include "Scene/Components.h"
+#include "Scene/Transform.h"
+#include "Scene/Camera.h"
+
 
 #endif //FLOWENGINE_FLOW_H
