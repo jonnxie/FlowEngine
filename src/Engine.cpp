@@ -82,4 +82,10 @@ namespace Flow {
     void Engine::setExecuteMode(ExecuteMode _mode) {
         executeMode = _mode;
     }
+
+    UP(Engine) makeEngine()
+    {
+        return std::make_unique<Engine>();
+    }
+
 } // FlowEngine

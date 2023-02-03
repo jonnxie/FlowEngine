@@ -13,4 +13,8 @@ namespace Flow {
     Object *Scene::getObjectWithID(uint64_t _id) {
         return objectMap[_id];
     }
+
+    UP(Scene) makeScene(){
+        return std::make_unique<Scene>();
+    }
 } // FlowEngine

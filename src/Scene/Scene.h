@@ -30,6 +30,8 @@ namespace Flow {
         ObjectMap objectMap;
         entt::registry registry;
     };
+
+    UP(Scene) makeScene();
 } // FlowEngine
 
 #endif //FLOWENGINE_SCENE_H

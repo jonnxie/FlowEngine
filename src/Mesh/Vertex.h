@@ -18,6 +18,10 @@ namespace Flow {
         glm::dvec3 dir;
     };
 
+    struct Color{
+        glm::uvec4 color;
+    };
+
     template<class V = Point>
     void setVertexPosition(V* _vertex, glm::dvec3 _pos)
     {
@@ -35,6 +39,16 @@ namespace Flow {
         {
             Normal* p = _vertex;
             p->dir = _dir;
+        }
+    }
+
+    template<class C = Color>
+    void setVertexColor(C* _vertex, glm::uvec4 _color)
+    {
+        if constexpr(std::is_base_of_v<Color, C>)
+        {
+            Color* c = _vertex;
+            c->color = _color;
         }
     }
 
@@ -58,7 +72,20 @@ namespace Flow {
         }
     }
 
-
+    template<class C = Color>
+    void debugVertexColor(C* _vertex)
+    {
+        if constexpr(std::is_base_of_v<Color, C>)
+        {
+            Color* p = _vertex;
+            std::cout
+            << "r: " << p->color.r
+            << " g: "<< p->color.g
+            << " b: "<< p->color.b
+            << " a: "<< p->color.a
+            << std::endl;
+        }
+    }
 
 } // Flow
 

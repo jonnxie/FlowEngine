@@ -29,6 +29,10 @@ namespace Flow {
 
     class Engine {
     public:
+        Engine() = default;
+        ~Engine() = default;
+        DisableCopy(Engine);
+    public:
         void init();
         void update();
     public:
@@ -49,15 +53,17 @@ namespace Flow {
         SP(Window) window;
         SP(Renderer) renderer;
         SP(Computer) computer;
-        size_t fps;
+        size_t fps{};
         /*
          * nanosecond
          */
-        double timing;
-        ExecuteMode executeMode;
+        double timing{};
+        ExecuteMode executeMode{ExecuteMode::Infinite};
         time_point startTime;
         time_point endTime;
     };
+
+    UP(Engine) makeEngine();
 
 } // Flow
 
