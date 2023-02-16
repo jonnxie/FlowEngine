@@ -26,7 +26,9 @@ namespace Flow {
         for (auto& entityID : view)
         {
             Object Object = { entityID, scene };
-            components.push_back(&Object.getComponent<VulkanRenderComponent>());
+            auto ptr = &Object.getComponent<VulkanRenderComponent>();
+            ptr->setRenderer(this);
+            components.push_back(ptr);
         }
         threadPool->executeVector<VulkanRenderComponent*>(components, [](VulkanRenderComponent* _item,size_t _index, size_t _threadIndex){
             _item->bindThread(_threadIndex);

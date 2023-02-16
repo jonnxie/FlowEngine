@@ -11,4 +11,13 @@ namespace Flow {
         return std::shared_ptr<VulkanRenderComponent>();
         #endif
     }
+
+    Renderer *RenderComponent::getRenderer() {
+        return renderer;
+    }
+
+    void RenderComponent::setRenderer(Renderer* _renderer) {
+        renderer = _renderer;
+    }
+
 } // Flow

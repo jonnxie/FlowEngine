@@ -25,6 +25,8 @@ namespace Flow {
         {
             return registry.view<Components...>();
         }
+    public:
+        void addViewPort(SP(ViewPort) _viewport);
     private:
         std::vector<SP(ViewPort)> viewports;
         ObjectMap objectMap;

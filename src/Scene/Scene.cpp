@@ -14,6 +14,10 @@ namespace Flow {
         return objectMap[_id];
     }
 
+    void Scene::addViewPort(std::shared_ptr<ViewPort> _viewport) {
+        viewports.emplace_back(_viewport);
+    }
+
     UP(Scene) makeScene(){
         return std::make_unique<Scene>();
     }

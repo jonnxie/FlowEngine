@@ -15,7 +15,9 @@ namespace Flow {
         for (auto& entityID : view)
         {
             Object Object = { entityID, scene };
-            components.push_back(&Object.getComponent<MultiThreadComputerComponent>());
+            auto ptr = &Object.getComponent<MultiThreadComputerComponent>();
+            ptr->setComputer(this);
+            components.push_back(ptr);
         }
         threadPool->executeVector<MultiThreadComputerComponent*>(components, [](MultiThreadComputerComponent* _item,size_t _index, size_t _threadIndex){
             (*_item)(_item);

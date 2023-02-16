@@ -11,4 +11,12 @@ namespace Flow {
         return std::shared_ptr<VulkanComputerComponent>();
         #endif
     }
+
+    Computer *ComputerComponent::getComputer() {
+        return computer;
+    }
+
+    void ComputerComponent::setComputer(Computer *_computer) {
+        computer = _computer;
+    }
 } // Flow

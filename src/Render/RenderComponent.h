@@ -13,6 +13,7 @@
 namespace Flow {
 
     class Material;
+    class Renderer;
 
     class RenderComponent {
     public:
@@ -28,7 +29,10 @@ namespace Flow {
         void operator()(RenderComponent* _component) {
             renderFunction(_component);
         }
+        Renderer* getRenderer();
+        void setRenderer(Renderer* _renderer);
     protected:
+        Renderer* renderer{};
         std::function<void(RenderComponent*)> renderFunction;
     };
 

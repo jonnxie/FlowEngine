@@ -12,6 +12,7 @@
 namespace Flow {
 
     class Material;
+    class Computer;
 
     class ComputerComponent {
     public:
@@ -26,7 +27,11 @@ namespace Flow {
         void operator()(ComputerComponent* _component) {
             computeFunction(_component);
         }
+    public:
+        Computer* getComputer();
+        void setComputer(Computer* _computer);
     protected:
+        Computer* computer{};
         std::function<void(ComputerComponent*)> computeFunction;
     };
 
