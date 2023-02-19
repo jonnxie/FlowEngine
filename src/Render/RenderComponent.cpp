@@ -6,9 +6,9 @@
 #include "Platform/Vulkan/VulkanRenderComponent.h"
 
 namespace Flow {
-    SP(RenderComponent) RenderComponent::createRenderComponent() {
+    SP(RenderComponent) RenderComponent::createRenderComponent(std::function<void(RenderComponent*)> _renderFunction) {
         #ifdef FLOW_GRAPHICS_VULKAN
-        return std::shared_ptr<VulkanRenderComponent>();
+        return std::make_shared<VulkanRenderComponent>(_renderFunction);
         #endif
     }
 

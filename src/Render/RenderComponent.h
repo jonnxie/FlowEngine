@@ -17,7 +17,7 @@ namespace Flow {
 
     class RenderComponent {
     public:
-        static SP(RenderComponent) createRenderComponent();
+        static SP(RenderComponent) createRenderComponent(std::function<void(RenderComponent*)> _renderFunction);
         virtual ~RenderComponent() = default;
     protected:
         RenderComponent() = default;
