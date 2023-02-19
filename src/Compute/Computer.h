@@ -29,6 +29,10 @@ namespace Flow {
         UP(ThreadPool) threadPool;
     };
 
+    SP(Computer) createMultipleComputer();
+
+    SP(Computer) createVulkanComputer();
+
 } // Flow
 
 #endif //FLOWENGINE_COMPUTER_H
