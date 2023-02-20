@@ -17,15 +17,15 @@ namespace Flow {
 
     class RenderComponent {
     public:
-        static SP(RenderComponent) createRenderComponent(std::function<void(RenderComponent*)> _renderFunction);
+        static SP(RenderComponent) createRenderComponent(const std::function<void(RenderComponent*)>& _renderFunction);
         virtual ~RenderComponent() = default;
     protected:
         RenderComponent() = default;
         explicit RenderComponent(std::function<void(RenderComponent*)> _renderFunction):renderFunction(std::move(_renderFunction)){};
     public:
-        virtual void drawIndex(size_t _count, size_t _offset) = 0;
-        virtual void draw(size_t _count, size_t _offset) = 0;
-        virtual void bindMaterial(Material* _mat) = 0;
+        virtual void drawIndex(size_t _count, size_t _offset){};
+        virtual void draw(size_t _count, size_t _offset) {};
+        virtual void bindMaterial(Material* _mat){};
         void operator()(RenderComponent* _component) {
             renderFunction(_component);
         }
@@ -35,6 +35,17 @@ namespace Flow {
         Renderer* renderer{};
         std::function<void(RenderComponent*)> renderFunction;
     };
+
+    class RenderComponentMiddle {
+    public:
+        RenderComponentMiddle() = default;
+        explicit RenderComponentMiddle(std::function<void(RenderComponent*)> _renderFunction);
+        ~RenderComponentMiddle() = default;
+    private:
+        SP(RenderComponent) renderComponent;
+    };
+
+
 
 } // Flow
 

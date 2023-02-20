@@ -20,16 +20,16 @@ namespace Flow {
         ~Object() = default;
 
         template<typename T, typename... Args>
-        T& addComponent(Args&&... args)
+        void addComponent(Args&&... args)
         {
             if constexpr(!std::is_convertible_v<MultipleComponent, T>)
             {
                 if (componentExist<T>())
                 {
-                    return T{};
+                    FlowError(This Component is not MultipleComponent);
                 };
             }
-            return scene->get().emplace<T>(handle, std::forward<Args>(args)...);
+            scene->get().emplace<T>(handle, std::forward<Args>(args)...);
         }
 
         template<typename T>
