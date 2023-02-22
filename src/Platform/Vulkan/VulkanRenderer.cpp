@@ -21,12 +21,12 @@ namespace Flow {
     }
 
     void VulkanRenderer::render(Scene *scene) {
-        auto view = scene->GetAllObjectsWith<VulkanRenderComponent>();
+        auto view = scene->GetAllObjectsWith<RenderComponentMiddle>();
         std::vector<VulkanRenderComponent*> components{};
         for (auto& entityID : view)
         {
             Object Object = { entityID, scene };
-            auto ptr = &Object.getComponent<VulkanRenderComponent>();
+            auto ptr = (VulkanRenderComponent*)Object.getComponent<RenderComponentMiddle>()();
             ptr->setRenderer(this);
             components.push_back(ptr);
         }

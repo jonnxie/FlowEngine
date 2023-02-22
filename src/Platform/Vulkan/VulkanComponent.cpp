@@ -26,13 +26,13 @@ namespace Flow {
         }
     }
 
-    void VulkanComponent::bindMaterial(Material *_mat, ComponentType _type) {
+    void VulkanComponent::bindMaterial(const Material *_mat, ComponentType _type) {
         auto& sets = _mat->getSets();
-        VulkanPipeline* pipeline = dynamic_cast<VulkanPipeline *>(_mat->getPipeline());
+        VulkanPipeline* pipeline = (VulkanPipeline *) (_mat->getPipeline());
         VkPipelineBindPoint bindPoint = _type == ComponentType::Compute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS;
         vkCmdBindPipeline(cmb, bindPoint, pipeline->getPipeline());
         for (size_t i = 0; i < sets.size(); ++i) {
-            bindMaterialSet(i, dynamic_cast<VulkanPipeline*>(_mat->getPipeline()),
+            bindMaterialSet(i, (VulkanPipeline *)(_mat->getPipeline()),
                             static_cast<VulkanMaterialSet*>(sets[i].get()), bindPoint);
         }
     }

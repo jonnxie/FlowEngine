@@ -23,7 +23,7 @@ namespace Flow {
     public:
         void bindThread(uint32_t _threadIndex, ComponentType _type = ComponentType::Render);
     protected:
-        void bindMaterial(Material* _mat, ComponentType _type);
+        void bindMaterial(const Material* _mat, ComponentType _type);
     private:
         void bindMaterialSet(uint32_t _index, VulkanPipeline* _pipeline, VulkanMaterialSet* _set, VkPipelineBindPoint _bindPoint);
     protected:

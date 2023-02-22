@@ -44,7 +44,7 @@ namespace Flow {
     }
 
     void Engine::begin() {
-        running = true;
+//        running = true;
         if (executeMode == ExecuteMode::Limited)
         {
             startTime = std::chrono::system_clock::now();
@@ -53,7 +53,7 @@ namespace Flow {
     }
 
     void Engine::end() {
-        running = false;
+//        running = false;
         if (executeMode == ExecuteMode::Limited)
         {
             endTime = std::chrono::system_clock::now();

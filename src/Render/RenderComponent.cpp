@@ -6,9 +6,9 @@
 #include "Platform/Vulkan/VulkanRenderComponent.h"
 
 namespace Flow {
-    SP(RenderComponent) RenderComponent::createRenderComponent(const std::function<void(RenderComponent*)>& _renderFunction) {
+    UP(RenderComponent) RenderComponent::createRenderComponent(std::function<void(RenderComponent*)> _renderFunction) {
         #ifdef FLOW_GRAPHICS_VULKAN
-        return std::make_shared<VulkanRenderComponent>(_renderFunction);
+        return std::make_unique<VulkanRenderComponent>(std::move(_renderFunction));
         #endif
     }
 
@@ -20,9 +20,44 @@ namespace Flow {
         renderer = _renderer;
     }
 
-    RenderComponentMiddle::RenderComponentMiddle(std::function<void(RenderComponent*)> _renderFunction) {
+    const Material *RenderComponent::getMaterial() {
+        return material;
+    }
+
+    RenderComponentMiddle::RenderComponentMiddle(std::function<void(RenderComponent*)> _renderFunction):
+            renderFunction(std::move(_renderFunction)){
         #ifdef FLOW_GRAPHICS_VULKAN
-            renderComponent = std::make_shared<VulkanRenderComponent>(std::move(_renderFunction));
+            renderComponent = RenderComponent::createRenderComponent(std::move(_renderFunction));
         #endif
+    }
+
+    RenderComponentMiddle::RenderComponentMiddle(const RenderComponentMiddle &_middle) {
+        renderFunction = _middle.renderFunction;
+#ifdef FLOW_GRAPHICS_VULKAN
+        renderComponent = RenderComponent::createRenderComponent(std::move(renderFunction));
+#endif
+    }
+
+    RenderComponentMiddle &RenderComponentMiddle::operator=(const RenderComponentMiddle &_middle) {
+        renderFunction = _middle.renderFunction;
+        #ifdef FLOW_GRAPHICS_VULKAN
+                renderComponent = RenderComponent::createRenderComponent(std::move(renderFunction));
+        #endif
+        return *this;
+    }
+
+    RenderComponentMiddle &RenderComponentMiddle::operator=(RenderComponentMiddle &&_middle) {
+        renderFunction = _middle.renderFunction;
+#ifdef FLOW_GRAPHICS_VULKAN
+        renderComponent = RenderComponent::createRenderComponent(std::move(renderFunction));
+#endif
+        return *this;
+    }
+
+    RenderComponentMiddle::RenderComponentMiddle(RenderComponentMiddle &&_middle) noexcept {
+        renderFunction = _middle.renderFunction;
+#ifdef FLOW_GRAPHICS_VULKAN
+        renderComponent = RenderComponent::createRenderComponent(std::move(renderFunction));
+#endif
     }
 } // Flow

@@ -24,7 +24,7 @@ namespace Flow {
     {
     }
 
-    void VulkanRenderComponent::bindMaterial(Material *_mat) {
+    void VulkanRenderComponent::bindMaterial(const Material *_mat) {
         VulkanComponent::bindMaterial(_mat, ComponentType::Render);
     }
 

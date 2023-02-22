@@ -13,4 +13,14 @@ namespace Flow{
 #endif
     }
 
+    UP(ViewPortSpec) makeViewPortSpec(uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height,
+                                      const Camera &_camera) {
+        auto ptr = std::make_unique<ViewPortSpec>();
+        ptr->x = _x;
+        ptr->y = _y;
+        ptr->width = _width;
+        ptr->height = _height;
+        ptr->camera = _camera;
+        return ptr;
+    }
 }

@@ -22,7 +22,7 @@ namespace Flow {
     public:
         void drawIndex(size_t _count, size_t _offset) override;
         void draw(size_t _count, size_t _offset) override;
-        void bindMaterial(Material* _mat) override;
+        void bindMaterial(const Material* _mat) override;
 
     private:
         VkCommandBuffer cmb{};

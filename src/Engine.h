@@ -49,6 +49,7 @@ namespace Flow {
         void end();
     private:
         std::atomic<bool> running = false;
+        std::atomic<bool> stop = false;
         UP(Scene) scene;
         SP(Window) window;
         SP(Renderer) renderer;
