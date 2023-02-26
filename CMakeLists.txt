@@ -58,6 +58,7 @@ target_include_directories(FlowEngine PUBLIC
         thirdparty/Entt/
         thirdparty/json/
         ${Vulkan_INCLUDE_DIRS}
+#        ${FORMAT_DIR}
         ${REFLECT_DIR})
 
 target_link_libraries(FlowEngine
@@ -65,6 +66,7 @@ target_link_libraries(FlowEngine
         glfw3
         ${Vulkan_LIBRARIES}
         reflect
+#        format
         )
 
 #set(CMAKE_C_FLAGS "-static")
