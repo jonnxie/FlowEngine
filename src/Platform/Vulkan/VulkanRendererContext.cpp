@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstring>
 #include "VulkanRendererContext.h"
+#include "VulkanMacro.h"
 #include "VulkanTool.h"
 #include "VulkanFrameBuffer.h"
 #include <GLFW/glfw3.h>
@@ -359,13 +360,7 @@ namespace Flow{
             createInfo.enabledLayerCount = 0;
         }
 
-        #ifdef NDEBUG
-        vkCreateInstance(&createInfo, nullptr, &instance);
-        #else
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-            FlowError(failed to create instance!);
-        }
-        #endif
+        VKExecute(vkCreateInstance(&createInfo, nullptr, &instance))
     }
 
     bool VulkanRendererContext::checkValidationLayerSupport() {
@@ -429,23 +424,11 @@ namespace Flow{
         createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT;
         createInfo.pfnCallback = debugCallback;
 
-        #ifdef NDEBUG
-        CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback);
-        #else
-        if (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback) != VK_SUCCESS) {
-            FlowError(failed to set up debug callback!);
-        }
-        #endif
+        VKExecute (CreateDebugReportCallbackEXT(instance, &createInfo, nullptr, &callback))
     }
 
     void VulkanRendererContext::createSurface() {
-        #ifdef NDEBUG
-        glfwCreateWindowSurface(instance, ((GLFWWindow*)window)->get(), nullptr, &surface);
-        #else
-        if (glfwCreateWindowSurface(instance, ((GLFWWindow*)window)->get(), nullptr, &surface) != VK_SUCCESS) {
-            FlowError(failed to create window surface!);
-        }
-        #endif
+        VKExecute(glfwCreateWindowSurface(instance, ((GLFWWindow*)window)->get(), nullptr, &surface));
     }
 
     void VulkanRendererContext::createPhysicalDevice() {
@@ -533,13 +516,7 @@ namespace Flow{
             createInfo.enabledLayerCount = 0;
         }
 
-        #ifdef NDEBUG
-        vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
-        #else
-        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-            FlowError(failed to create logical device!);
-        }
-        #endif
+        VKExecute(vkCreateDevice(physicalDevice, &createInfo, nullptr, &device))
 
         vkGetDeviceQueue(device, queueIndices.computeFamily, 0,&computeQueue);
         vkGetDeviceQueue(device, queueIndices.graphicsFamily, 0, &graphicsQueue);
@@ -801,13 +778,7 @@ namespace Flow{
         renderPassInfo.dependencyCount = 2;
         renderPassInfo.pDependencies = dependency.data();
 
-        #ifdef NDEBUG
-        vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
-        #else
-        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
-            FlowError(failed to create render pass!);
-        }
-        #endif
+        VKExecute(vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass))
     }
 
     void VulkanRendererContext::createCommandPool() {
@@ -822,13 +793,7 @@ namespace Flow{
         poolInfo.queueFamilyIndex = queueIndices.graphicsFamily;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-        #ifdef NDEBUG
-        vkCreateCommandPool(device, &poolInfo, nullptr, &graphicCP);
-        #else
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &graphicCP) != VK_SUCCESS) {
-            FlowError(failed to create graphics command Pool!);
-        }
-        #endif
+        VKExecute(vkCreateCommandPool(device, &poolInfo, nullptr, &graphicCP))
     }
 
     void VulkanRendererContext::createComputeCommandPool() {
@@ -837,13 +802,7 @@ namespace Flow{
         poolInfo.queueFamilyIndex = queueIndices.computeFamily;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 
-        #ifdef NDEBUG
-        vkCreateCommandPool(device, &poolInfo, nullptr, &computeCP);
-        #else
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &computeCP) != VK_SUCCESS) {
-            FlowError(failed to create compute command Pool!);
-        }
-        #endif
+        VKExecute(vkCreateCommandPool(device, &poolInfo, nullptr, &computeCP))
     }
 
     void VulkanRendererContext::createTransferCommandPool() {
@@ -852,13 +811,7 @@ namespace Flow{
         poolInfo.queueFamilyIndex = queueIndices.transferFamily;
         poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 
-        #ifdef NDEBUG
-        vkCreateCommandPool(device, &poolInfo, nullptr, &transferCP);
-        #else
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &transferCP) != VK_SUCCESS) {
-            FlowError(failed to create transfer command Pool!);
-        }
-        #endif
+        VKExecute(vkCreateCommandPool(device, &poolInfo, nullptr, &transferCP));
     }
 
     void VulkanRendererContext::createDescriptorPool() {
@@ -883,13 +836,7 @@ namespace Flow{
         poolInfo.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
         poolInfo.pPoolSizes = pool_sizes;
 
-        #ifdef NDEBUG
-        vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
-        #else
-        if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
-            FlowError(failed to create descriptor Pool!);
-        }
-        #endif
+        VKExecute(vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool))
     }
 
     void VulkanRendererContext::createPresentFrameBuffers() {
@@ -911,13 +858,7 @@ namespace Flow{
             framebufferInfo.height = (*window)().second;
             framebufferInfo.layers = 1;
 
-            #ifdef NDEBUG
-            vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_presents[i].framebuffer);
-            #else
-            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_presents[i].framebuffer) != VK_SUCCESS) {
-                FlowError(failed to create framebuffer!);
-            }
-            #endif
+            VKExecute(vkCreateFramebuffer(device, &framebufferInfo, nullptr, &m_presents[i].framebuffer))
         }
     }
 
@@ -950,13 +891,7 @@ namespace Flow{
         allocInfo.descriptorSetCount = 1;
         allocInfo.pSetLayouts = &_setLayout;
 
-        #ifdef NDEBUG
-        vkAllocateDescriptorSets(device, &allocInfo, _set);
-        #else
-        if (vkAllocateDescriptorSets(device, &allocInfo, _set) != VK_SUCCESS) {
-            FlowError(failed to allocate descriptor set!);
-        }
-        #endif
+        VKExecute(vkAllocateDescriptorSets(device, &allocInfo, _set))
     }
 
     void VulkanRendererContext::createLinearSampler() {
@@ -975,13 +910,7 @@ namespace Flow{
         samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
         samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
-        #ifdef NDEBUG
-        vkCreateSampler(device, &samplerInfo, nullptr, &linearSampler);
-        #else
-        if (vkCreateSampler(device, &samplerInfo, nullptr, &linearSampler) != VK_SUCCESS) {
-            FlowError(failed to create texture sampler!);
-        }
-        #endif
+        VKExecute(vkCreateSampler(device, &samplerInfo, nullptr, &linearSampler))
     }
 
     static void DestroyDebugReportCallbackEXT(VkInstance instance,
@@ -1025,13 +954,7 @@ namespace Flow{
     void VulkanRendererContext::createSemaphores() {
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-        #ifdef NDEBUG
-        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
-        #else
-        if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS) {
-            FlowError(failed to create semaphores!);
-        }
-        #endif
+        VKExecute(vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore))
     }
 
 

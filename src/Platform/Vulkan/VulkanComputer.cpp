@@ -3,6 +3,7 @@
 //
 
 #include "VulkanComputer.h"
+#include "VulkanMacro.h"
 #include "VulkanRendererContext.h"
 #include "Compute/threadpool.h"
 #include "VulkanComputerComponent.h"
@@ -50,13 +51,7 @@ namespace Flow {
     void VulkanComputer::createSemaphore() {
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-#ifdef NDEBUG
-        vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &computeFinishedSemaphore);
-#else
-        if (vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &computeFinishedSemaphore) != VK_SUCCESS) {
-            FlowError(failed to create semaphores!);
-        }
-#endif
+        VKExecute(vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &computeFinishedSemaphore))
     }
 
     void VulkanComputer::createMultiThreadCMDPool() {
@@ -68,11 +63,7 @@ namespace Flow {
         cmdPoolInfo.queueFamilyIndex = VulkanContext->getIndices().computeFamily;
         for(auto& pool: computeCMDPools)
         {
-#ifdef NDEBUG
-            vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool);
-#else
-            VK_CHECK_RESULT(vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool));
-#endif
+            VKExecute(vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool));
         }
     }
 } // Flow

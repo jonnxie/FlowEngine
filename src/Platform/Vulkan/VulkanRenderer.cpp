@@ -3,6 +3,7 @@
 //
 
 #include "VulkanRenderer.h"
+#include "VulkanMacro.h"
 #include "VulkanRendererContext.h"
 #include "Scene/Scene.h"
 #include <thread>
@@ -26,7 +27,7 @@ namespace Flow {
         for (auto& entityID : view)
         {
             Object Object = { entityID, scene };
-            auto ptr = (VulkanRenderComponent*)Object.getComponent<RenderComponentMiddle>()();
+            auto ptr = static_cast<VulkanRenderComponent*>(Object.getComponent<RenderComponentMiddle>()());
             ptr->setRenderer(this);
             components.push_back(ptr);
         }
@@ -48,11 +49,7 @@ namespace Flow {
         allocateInfo.commandPool = pool;
         allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
-#ifdef NDEBUG
-        vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB);
-#else
-        VK_CHECK_RESULT(vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB));
-#endif
+        VKExecute(vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB))
     }
 
     VulkanRenderer::VulkanRenderer() {
@@ -67,11 +64,7 @@ namespace Flow {
     void VulkanRenderer::createSemaphore() {
         VkSemaphoreCreateInfo semaphoreInfo = {};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
-#ifdef NDEBUG
-        vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
-#else
-        VK_CHECK_RESULT(vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore));
-#endif
+        VKExecute(vkCreateSemaphore(VulkanDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore))
     }
 
     void VulkanRenderer::createMultiThreadCMDPool() {
@@ -84,11 +77,7 @@ namespace Flow {
         graphicsCMDPools.resize(threadPool->m_thread_count);
         for(auto& pool: graphicsCMDPools)
         {
-            #ifdef NDEBUG
-            vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool);
-            #else
-            VK_CHECK_RESULT(vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool));
-            #endif
+            VKExecute(vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool))
         }
     }
 
@@ -104,11 +93,7 @@ namespace Flow {
         commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
         commandBufferAllocateInfo.commandBufferCount = 1;
 
-        #ifdef NDEBUG
-        vkAllocateCommandBuffers(VulkanDevice, &commandBufferAllocateInfo, _cmd);
-        #else
-        VK_CHECK_RESULT(vkAllocateCommandBuffers(VulkanDevice, &commandBufferAllocateInfo, _cmd));
-        #endif
+        VKExecute(vkAllocateCommandBuffers(VulkanDevice, &commandBufferAllocateInfo, _cmd));
     }
 
     void VulkanRenderer::bindCamera(Camera* _camera) {
