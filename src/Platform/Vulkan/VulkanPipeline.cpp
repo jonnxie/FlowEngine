@@ -5,7 +5,8 @@
 #include "VulkanPipeline.h"
 
 namespace Flow {
-    VulkanPipeline::VulkanPipeline(const std::vector<std::string> _files) {
+    VulkanPipeline::VulkanPipeline()
+    {
 
     }
 

@@ -402,8 +402,9 @@ namespace Flow {
 
 
     void VulkanShader::reflectMaterial(Material &material) const {
+        auto& materialSets = material.getSets();
         for (auto set : sets) {
-            material.pushSet(reflectMaterialSet(*set));
+            materialSets.emplace_back(reflectMaterialSet(*set));
         }
     }
 

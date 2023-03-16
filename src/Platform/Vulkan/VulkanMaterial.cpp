@@ -4,6 +4,7 @@
 
 #include "VulkanMaterial.h"
 #include "VulkanTool.h"
+#include "VulkanPipeline.h"
 
 namespace Flow {
 
@@ -29,10 +30,11 @@ namespace Flow {
     }
 
     VulkanMaterial::VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {
+        auto shaders = pipeline->getShaders();
         for (const auto &item: _shaderFiles) {
             auto shader = Shader::createShader(item.first, item.first, item.second);
             shader->reflectMaterial(*this);
-            shaders.emplace_back(shader);
+            shaders.push_back(shader);
         }
     }
 } // Flow

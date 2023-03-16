@@ -13,7 +13,7 @@
 
 namespace Flow {
 
-    struct VulkanMaterialSet : MaterialSet{
+    struct VulkanMaterialSet : public MaterialSet{
         operator VkDescriptorSet() const {return set;};
         VkDescriptorSet set{VK_NULL_HANDLE};
     };
@@ -105,7 +105,6 @@ namespace Flow {
         VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
 
     private:
-        std::vector<SP(Shader)> shaders;
     };
 
 

@@ -6,16 +6,21 @@
 #define FLOWENGINE_PIPELINE_H
 
 #include "Shader.h"
+#include <utility>
 #include <vector>
 
 namespace Flow {
 
     class Pipeline {
     public:
-        static Pipeline* GeneratePipeline(const std::vector<std::string> _files);
-        virtual ~Pipeline(){};
+        static UP(Pipeline) GeneratePipeline();
+        virtual ~Pipeline()= default;;
+    protected:
+        explicit Pipeline() = default;
     public:
         virtual void bind() = 0;
+    public:
+        std::vector<SP(Shader)>& getShaders() {return shaders;};
     private:
         std::vector<SP(Shader)> shaders;
     };

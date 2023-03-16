@@ -37,7 +37,7 @@ namespace Flow {
     void VulkanSmartHandle<Handle>::release() {
         if (handle == VK_NULL_HANDLE) return;
 
-        VkDevice device = VulkanDevice;
+        VkDevice device {VulkanDevice};
         if constexpr(std::is_same_v<Handle, VkBuffer>) {
             vkDestroyBuffer(device, handle, nullptr);
         } else if constexpr(std::is_same_v<Handle, VkDeviceMemory>) {

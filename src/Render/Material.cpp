@@ -7,7 +7,7 @@
 
 namespace Flow {
     Material::Material() {
-
+        pipeline = Pipeline::GeneratePipeline();
     }
 
     SP(Material) Material::creatMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {

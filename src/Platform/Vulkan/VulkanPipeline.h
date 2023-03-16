@@ -12,7 +12,7 @@ namespace Flow {
 
     class VulkanPipeline : public Pipeline{
     public:
-        explicit VulkanPipeline(const std::vector<std::string> _files);
+        explicit VulkanPipeline();
         ~VulkanPipeline() override;
     public:
         void bind() override {

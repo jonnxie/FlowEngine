@@ -6,9 +6,9 @@
 #include "Platform/Vulkan/VulkanPipeline.h"
 
 namespace Flow {
-    Pipeline *Pipeline::GeneratePipeline(const std::vector<std::string> _files) {
+    UP(Pipeline) Pipeline::GeneratePipeline() {
         #ifdef FLOW_GRAPHICS_VULKAN
-            return new VulkanPipeline(_files);
+            return std::make_unique<VulkanPipeline>();
         #endif
     }
 } // Flow

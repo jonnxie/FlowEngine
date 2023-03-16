@@ -27,7 +27,7 @@ namespace Flow {
     }
 
     void VulkanComponent::bindMaterial(const Material *_mat, ComponentType _type) {
-        auto& sets = _mat->getSets();
+        auto& sets = _mat->getCSets();
         VulkanPipeline* pipeline = (VulkanPipeline *) (_mat->getPipeline());
         VkPipelineBindPoint bindPoint = _type == ComponentType::Compute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS;
         vkCmdBindPipeline(cmb, bindPoint, pipeline->getPipeline());
