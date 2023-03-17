@@ -35,9 +35,9 @@ namespace Flow {
         void pushSet(UP(MaterialSet) _set) {
             sets.push_back(std::move(_set));
         }
-        const std::vector<UP(MaterialSet)>& getCSets() const {return sets;}
+        [[nodiscard]] const std::vector<UP(MaterialSet)>& getCSets() const {return sets;}
         std::vector<UP(MaterialSet)>& getSets() {return sets;}
-        const Pipeline* getPipeline() const {return  pipeline.get();}
+        [[nodiscard]] const Pipeline* getPipeline() const {return  pipeline.get();}
     protected:
         std::vector<UP(MaterialSet)> sets;
         UP(Pipeline) pipeline;

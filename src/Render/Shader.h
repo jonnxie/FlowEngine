@@ -12,6 +12,7 @@
 namespace Flow {
 
     class Material;
+    class Pipeline;
 
     class Shader {
     public:
@@ -27,7 +28,7 @@ namespace Flow {
         }
     public:
         virtual void reflectMaterial(Material& material) const = 0;
-        
+        virtual void reflectPipeline(Pipeline& pipeline) const = 0;
     };
 
 } // Material

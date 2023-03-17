@@ -30,7 +30,7 @@ namespace Flow {
     }
 
     VulkanMaterial::VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {
-        auto shaders = pipeline->getShaders();
+        auto& shaders = pipeline->getShaders();
         for (const auto &item: _shaderFiles) {
             auto shader = Shader::createShader(item.first, item.first, item.second);
             shader->reflectMaterial(*this);

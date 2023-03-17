@@ -16,10 +16,13 @@ namespace Flow {
     class VulkanShader : public Shader{
     public:
         VulkanShader(const std::string& _filename, uint32_t _type);
-        void reflectMaterial(Material& material) const override;
-        const VkPipelineShaderStageCreateInfo& getInfo() { return shaderInfo;};
         ~VulkanShader() override;
     public:
+        void reflectMaterial(Material& material) const override;
+        void reflectPipeline(Pipeline& pipeline) const override;
+        const VkPipelineShaderStageCreateInfo& getInfo() { return shaderInfo;};
+        const std::vector<VkDescriptorSetLayout>& getSetLayouts() const {return setLayouts;}
+    private:
         UP(VulkanMaterialSet) reflectMaterialSet(const SpvReflectDescriptorSet& _set) const;
     private:
         std::vector<VkDescriptorSetLayout> setLayouts{};

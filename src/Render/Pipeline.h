@@ -21,7 +21,7 @@ namespace Flow {
         virtual void bind() = 0;
     public:
         std::vector<SP(Shader)>& getShaders() {return shaders;};
-    private:
+    protected:
         std::vector<SP(Shader)> shaders;
     };
 

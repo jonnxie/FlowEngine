@@ -8,6 +8,7 @@
 #include "VulkanTool.h"
 #include "VulkanRendererContext.h"
 #include "VulkanMaterial.h"
+#include "VulkanMacro.h"
 
 namespace Flow {
 
@@ -232,11 +233,13 @@ namespace Flow {
                 uint32_t count = 0;
                 result = spvReflectEnumerateDescriptorSets(&module, &count, NULL);
                 assert(result == SPV_REFLECT_RESULT_SUCCESS);
-
+                sets.resize(count);
                 result = spvReflectEnumerateDescriptorSets(&module, &count, sets.data());
                 assert(result == SPV_REFLECT_RESULT_SUCCESS);
-
-                sets.resize(count);
+                // Sort sets by location
+                std::sort(std::begin(sets), std::end(sets),
+                          [](const SpvReflectDescriptorSet* a, const SpvReflectDescriptorSet* b) {
+                              return a->set < b->set; });
                 std::vector<DescriptorSetLayoutData> set_layouts(sets.size(), DescriptorSetLayoutData{});
                 setLayouts.resize(count);
                 VkDescriptorSetLayout vk_layout;
@@ -371,33 +374,39 @@ namespace Flow {
             unit->set = set.get();
             set->units.push_back(std::move(unit));
         }
-        DescriptorSetLayoutData layout;
-        layout.bindings.resize(_set.binding_count);
-        for (uint32_t i_binding = 0; i_binding < _set.binding_count; ++i_binding) {
-            const SpvReflectDescriptorBinding& refl_binding = *(_set.bindings[i_binding]);
-            VkDescriptorSetLayoutBinding& layout_binding = layout.bindings[i_binding];
-            layout_binding.binding = refl_binding.binding;
-            layout_binding.descriptorType = static_cast<VkDescriptorType>(refl_binding.descriptor_type);
-            layout_binding.descriptorCount = 1;
-            for (uint32_t i_dim = 0; i_dim < refl_binding.array.dims_count; ++i_dim) {
-                layout_binding.descriptorCount *= refl_binding.array.dims[i_dim];
-            }
-            layout_binding.stageFlags = static_cast<VkShaderStageFlagBits>(module.shader_stage);
+
+        /*
+         * useless code
+         */
+        {
+            //        DescriptorSetLayoutData layout;
+//        layout.bindings.resize(_set.binding_count);
+//        for (uint32_t i_binding = 0; i_binding < _set.binding_count; ++i_binding) {
+//            const SpvReflectDescriptorBinding& refl_binding = *(_set.bindings[i_binding]);
+//            VkDescriptorSetLayoutBinding& layout_binding = layout.bindings[i_binding];
+//            layout_binding.binding = refl_binding.binding;
+//            layout_binding.descriptorType = static_cast<VkDescriptorType>(refl_binding.descriptor_type);
+//            layout_binding.descriptorCount = 1;
+//            for (uint32_t i_dim = 0; i_dim < refl_binding.array.dims_count; ++i_dim) {
+//                layout_binding.descriptorCount *= refl_binding.array.dims[i_dim];
+//            }
+//            layout_binding.stageFlags = static_cast<VkShaderStageFlagBits>(module.shader_stage);
+//        }
+//        layout.set_number = _set.set;
+//        layout.create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+//        layout.create_info.bindingCount = _set.binding_count;
+//        layout.create_info.pBindings = layout.bindings.data();
+//
+//        VkDescriptorSetLayout setLayout;
+//        vkCreateDescriptorSetLayout(VulkanDevice,
+//                                    &layout.create_info,
+//                                    nullptr,
+//                                    &setLayout);
+
         }
-        layout.set_number = _set.set;
-        layout.create_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layout.create_info.bindingCount = _set.binding_count;
-        layout.create_info.pBindings = layout.bindings.data();
 
-        VkDescriptorSetLayout setLayout;
-        vkCreateDescriptorSetLayout(VulkanDevice,
-                                    &layout.create_info,
-                                    nullptr,
-                                    &setLayout);
-
-        VulkanContext->allocateDescriptorSet(setLayout, &set->set);
-        vkDestroyDescriptorSetLayout(VulkanDevice, setLayout, nullptr);
-        return std::move(set);
+        VulkanContext->allocateDescriptorSet(setLayouts[_set.set], &set->set);
+        return set;
     }
 
 
@@ -409,7 +418,16 @@ namespace Flow {
     }
 
     VulkanShader::~VulkanShader() {
+        for (auto setLayout : setLayouts)
+        {
+            vkDestroyDescriptorSetLayout(VulkanDevice, setLayout, nullptr);
+        }
         spvReflectDestroyShaderModule(&module);
         vkDestroyShaderModule(VulkanDevice, shaderInfo.module, nullptr);
     }
+
+    void VulkanShader::reflectPipeline(Pipeline &pipeline) const {
+
+    }
+
 } // Flow
