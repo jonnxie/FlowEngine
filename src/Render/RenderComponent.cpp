@@ -3,6 +3,8 @@
 //
 
 #include "RenderComponent.h"
+
+#include <utility>
 #include "Platform/Vulkan/VulkanRenderComponent.h"
 
 namespace Flow {
@@ -20,8 +22,12 @@ namespace Flow {
         renderer = _renderer;
     }
 
-    const Material *RenderComponent::getMaterial() {
+    SP(Material) RenderComponent::getMaterial() {
         return material;
+    }
+
+    void RenderComponent::setMaterial(SP(Material)_material) {
+        material = std::move(_material);
     }
 
     RenderComponentMiddle::RenderComponentMiddle(std::function<void(RenderComponent*)> _renderFunction):

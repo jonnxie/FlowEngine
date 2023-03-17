@@ -30,10 +30,11 @@ namespace Flow {
             renderFunction(_component);
         }
         Renderer* getRenderer();
-        const Material* getMaterial();
+        SP(Material) getMaterial();
+        void setMaterial(SP(Material) _material);
         void setRenderer(Renderer* _renderer);
     protected:
-        Material* material{};
+        SP(Material) material{};
         Renderer* renderer{};
         std::function<void(RenderComponent*)> renderFunction;
     };

@@ -27,7 +27,7 @@ namespace Flow {
         for (auto& entityID : view)
         {
             Object Object = { entityID, scene };
-            auto ptr = static_cast<VulkanRenderComponent*>(Object.getComponent<RenderComponentMiddle>()());
+            auto ptr = dynamic_cast<VulkanRenderComponent*>(Object.getComponent<RenderComponentMiddle>()());
             ptr->setRenderer(this);
             components.push_back(ptr);
         }

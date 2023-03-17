@@ -6,6 +6,7 @@
 #include "Render/RendererContext.h"
 #include "Macro/Macro.h"
 #include "VulkanTool.h"
+#include "VulkanMacro.h"
 
 namespace Flow {
     static void check_vk_result(VkResult err)
@@ -267,14 +268,14 @@ namespace Flow {
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         VulkanRendererContext &device = *((VulkanRendererContext *) RendererContext::get().get());
-        VK_CHECK_RESULT(vkCreateImage(device, &imageInfo, nullptr, &image()));
+        VKExecute(vkCreateImage(device, &imageInfo, nullptr, &image()));
         VkMemoryRequirements memReqs;
         vkGetImageMemoryRequirements(device, image, &memReqs);
         VkMemoryAllocateInfo memAllocInfo = tool::memoryAllocateInfo();
         memAllocInfo.allocationSize = memReqs.size;
         memAllocInfo.memoryTypeIndex = tool::getMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-        VK_CHECK_RESULT(vkAllocateMemory(device, &memAllocInfo, nullptr, &memory()));
-        VK_CHECK_RESULT(vkBindImageMemory(device, image, memory, 0));
+        VKExecute(vkAllocateMemory(device, &memAllocInfo, nullptr, &memory()));
+        VKExecute(vkBindImageMemory(device, image, memory, 0));
 
         // Image view
         VkImageViewCreateInfo viewInfo = tool::imageViewCreateInfo();
@@ -284,7 +285,7 @@ namespace Flow {
         viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         viewInfo.subresourceRange.levelCount = 1;
         viewInfo.subresourceRange.layerCount = 1;
-        VK_CHECK_RESULT(vkCreateImageView(device, &viewInfo, nullptr, &imageView()));
+        VKExecute(vkCreateImageView(device, &viewInfo, nullptr, &imageView()));
 
         // Staging buffers for font data upload
         VkBuffer stagingBuffer;
@@ -364,7 +365,7 @@ namespace Flow {
         samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
         samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
         samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
-        VK_CHECK_RESULT(vkCreateSampler(device, &samplerInfo, nullptr, &sampler()));
+        VKExecute(vkCreateSampler(device, &samplerInfo, nullptr, &sampler()));
 
         // Descriptor Pool
         std::vector<VkDescriptorPoolSize> poolSizes = {
@@ -375,11 +376,11 @@ namespace Flow {
                 tool::getSetLayoutBinding(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 0),
         };
         VkDescriptorSetLayoutCreateInfo descriptorLayout = tool::descriptorSetLayoutCreateInfo(setLayoutBindings);
-        VK_CHECK_RESULT(vkCreateDescriptorSetLayout(device, &descriptorLayout, nullptr, &setLayout()));
+        VKExecute(vkCreateDescriptorSetLayout(device, &descriptorLayout, nullptr, &setLayout()));
 
         // Descriptor set
         VkDescriptorSetAllocateInfo allocInfo = tool::descriptorSetAllocateInfo(VulkanDescriptorPool, &setLayout(), 1);
-        VK_CHECK_RESULT(vkAllocateDescriptorSets(device, &allocInfo, &set()));
+        VKExecute(vkAllocateDescriptorSets(device, &allocInfo, &set()));
         VkDescriptorImageInfo fontDescriptor = tool::descriptorImageInfo(
                 sampler,
                 imageView,
@@ -393,7 +394,7 @@ namespace Flow {
         // Pipeline cache
         VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
         pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-        VK_CHECK_RESULT(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &pipelineCache()));
+        VKExecute(vkCreatePipelineCache(device, &pipelineCacheCreateInfo, nullptr, &pipelineCache()));
 
         // Pipeline layout
         // Push constants for UI rendering parameters
@@ -401,7 +402,7 @@ namespace Flow {
         VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = tool::pipelineLayoutCreateInfo(&setLayout(), 1);
         pipelineLayoutCreateInfo.pushConstantRangeCount = 1;
         pipelineLayoutCreateInfo.pPushConstantRanges = &pushConstantRange;
-        VK_CHECK_RESULT(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout()));
+        VKExecute(vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout()));
 
         // Setup graphics pipeline for UI rendering
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyState =
@@ -474,7 +475,7 @@ namespace Flow {
 //        shaderStages[0] = ShaderPool::getPool()["gui_vs"];
 //        shaderStages[1] = ShaderPool::getPool()["gui_fs"];
 
-        VK_CHECK_RESULT(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline()));
+        VKExecute(vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineCreateInfo, nullptr, &pipeline()));
     }
 
     VulkanUI::VulkanUI(Window* _window):window(_window) {

@@ -265,14 +265,7 @@ namespace Flow{
         allocInfo.commandBufferCount = 1;
 
         VkCommandBuffer commandBuffer;
-        #ifdef NDEBUG
-        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-        #else
-        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
-        {
-            FlowError(Failed to allocate command buffer);
-        }
-        #endif
+        VKExecute(vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer));
 
         VkCommandBufferBeginInfo beginInfo = {};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
