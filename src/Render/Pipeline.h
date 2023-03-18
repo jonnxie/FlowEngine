@@ -18,8 +18,6 @@ namespace Flow {
     protected:
         explicit Pipeline() = default;
     public:
-        virtual void bind() = 0;
-    public:
         std::vector<SP(Shader)>& getShaders() {return shaders;};
     protected:
         std::vector<SP(Shader)> shaders;

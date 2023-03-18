@@ -105,7 +105,7 @@ namespace Flow {
         VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
 
     private:
-
+        bool init(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
     };
 
 

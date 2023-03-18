@@ -34,7 +34,7 @@ namespace Flow {
 #define TaskShader      6
 #define MeshShader      7
 
-    enum class AssemState{
+    enum class AssemState {
         Point_List,
         Line_Strip,
         Line_List,
@@ -42,7 +42,7 @@ namespace Flow {
         Triangle_Strip,
     };
 
-    enum class BlendState{
+    enum class BlendState {
         /*
          * no transparent
          */
@@ -53,7 +53,7 @@ namespace Flow {
         Capture,
     };
 
-    enum class RenderPassType{
+    enum class RenderPassType {
         CascadeShadow,
         OffScreen,
         Capture,
@@ -61,7 +61,7 @@ namespace Flow {
         Color,
     };
 
-    enum class RasterState{
+    enum class RasterState {
         Point,
         Polyline,
         TriangleLine,
@@ -71,17 +71,17 @@ namespace Flow {
         Back_Face,
     };
 
-    enum class DrawType{
+    enum class DrawType {
         Index,
         Vertex,
         Indirect,
     };
 
-    enum class MultisampleState{
+    enum class MultisampleState {
         Default,
     };
 
-    enum class DepthStencilState{
+    enum class DepthStencilState {
         Default,
         UnderScreenLine,
         DepthWriteDisable,
@@ -89,7 +89,7 @@ namespace Flow {
         MaxDepth,
     };
 
-    enum class DrawObjectType{
+    enum class DrawObjectType {
         Default,
         OffScreen,
         Transparency,
@@ -97,16 +97,16 @@ namespace Flow {
         AABB,
     };
 
-    const glm::vec3 RED_COLOR{1.0f,0.0f,0.0f};
-    const glm::vec3 YELLOW_COLOR{1.0f,1.0f,0.0f};
-    const glm::vec3 GREEN_COLOR{0.0f,0.5f,0.0f};
-    const glm::vec3 PURPLE_COLOR{0.5f,0.0f,0.5f};
-    const glm::vec3 BLUE_COLOR{0.0f,0.0f,1.0f};
-    const glm::vec3 CYAN_COLOR{0.0f,1.0f,1.0f};
-    const glm::vec3 GOLD_COLOR{1.0f,0.84f,0.0f};
-    const glm::vec3 ORANGE_COLOR{1.0f,0.64f,0.0f};
-    const glm::vec3 WHITE_COLOR{1.0f,1.0f,1.0f};
-    const glm::vec3 BLACK_COLOR{0.0f,0.0f,0.0f};
+    const glm::vec3 RED_COLOR{1.0f, 0.0f, 0.0f};
+    const glm::vec3 YELLOW_COLOR{1.0f, 1.0f, 0.0f};
+    const glm::vec3 GREEN_COLOR{0.0f, 0.5f, 0.0f};
+    const glm::vec3 PURPLE_COLOR{0.5f, 0.0f, 0.5f};
+    const glm::vec3 BLUE_COLOR{0.0f, 0.0f, 1.0f};
+    const glm::vec3 CYAN_COLOR{0.0f, 1.0f, 1.0f};
+    const glm::vec3 GOLD_COLOR{1.0f, 0.84f, 0.0f};
+    const glm::vec3 ORANGE_COLOR{1.0f, 0.64f, 0.0f};
+    const glm::vec3 WHITE_COLOR{1.0f, 1.0f, 1.0f};
+    const glm::vec3 BLACK_COLOR{0.0f, 0.0f, 0.0f};
 
     const glm::vec3 UpDirection{0.0f, 0.0f, 1.0f};
     const glm::vec3 DownDirection{0.0f, 0.0f, -1.0f};
@@ -219,6 +219,12 @@ std::cout << "FlowWarning : " << "msg" << " in " << __FILE__ << " at line " << _
 
 #define FlowError(msg) \
 throw std::runtime_error(std::string("FlowError: ") + std::string(#msg) + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__))
+
+#define FlowCheckError(function) \
+if (!function)                   \
+{                                \
+    throw std::runtime_error(std::string("FlowError: ") + std::string(#function) + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__));   \
+}
 
 #define FlowCheckVulkan(fuc) \
 if (fuc != VK_SUCCESS) {  \

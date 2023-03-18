@@ -15,16 +15,15 @@ namespace Flow {
         explicit VulkanPipeline();
         ~VulkanPipeline() override;
     public:
-        void bind() override {
-
-        };
-        VkPipelineLayout getLayout() const {return layout;};
-        void generateLayout();
+        VkPipelineLayout getLayout() const {return m_layout;};
         VkPipeline getPipeline() const {return pipeline;};
         void setPipeline(VkPipeline _pipeline) {pipeline = _pipeline;}
         operator VkPipeline() const {return pipeline;};
+    public:
+        void generateLayout();
+        void generateInputLayout();
     private:
-        VulkanSmartHandle<VkPipelineLayout> layout{VK_NULL_HANDLE};
+        VulkanSmartHandle<VkPipelineLayout> m_layout{VK_NULL_HANDLE};
         VulkanSmartHandle<VkPipeline> pipeline{VK_NULL_HANDLE};
     };
 

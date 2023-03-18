@@ -30,11 +30,16 @@ namespace Flow {
     }
 
     VulkanMaterial::VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {
+        FlowCheckError(init(_shaderFiles));
+    }
+
+    bool VulkanMaterial::init(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles) {
         auto& shaders = pipeline->getShaders();
         for (const auto &item: _shaderFiles) {
             auto shader = Shader::createShader(item.first, item.first, item.second);
             shader->reflectMaterial(*this);
             shaders.push_back(shader);
         }
+        dynamic_cast<VulkanPipeline*>(pipeline.get())->generateLayout();
     }
 } // Flow
