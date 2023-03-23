@@ -19,6 +19,7 @@ namespace Flow {
     };
 
     struct VulkanMaterialUnit : MaterialUnit{
+        ~VulkanMaterialUnit() override = default;
         VulkanSmartHandle<VkDeviceMemory> memory{VK_NULL_HANDLE};
         VkMemoryPropertyFlags memoryPropertyFlags;
         uint32_t binding;
@@ -26,6 +27,7 @@ namespace Flow {
     };
 
     struct VulkanBufferMaterialUnit : VulkanMaterialUnit{
+        ~VulkanBufferMaterialUnit() override = default;
         VulkanSmartHandle<VkBuffer> buffer{VK_NULL_HANDLE};
         VkBufferUsageFlags bufferUsageFlags;
 
@@ -94,6 +96,7 @@ namespace Flow {
     };
 
     struct VulkanImageMaterialUnit : VulkanMaterialUnit{
+        ~VulkanImageMaterialUnit() override = default;
         VulkanSmartHandle<VkImage> image{VK_NULL_HANDLE};
         VulkanSmartHandle<VkImageView> imageView{VK_NULL_HANDLE};
         VkImageUsageFlags imageUsageFlags;
@@ -103,7 +106,7 @@ namespace Flow {
     class VulkanMaterial : public Material{
     public:
         VulkanMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
-
+        ~VulkanMaterial() override = default;
     private:
         bool init(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
     };

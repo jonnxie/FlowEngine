@@ -223,7 +223,7 @@ throw std::runtime_error(std::string("FlowError: ") + std::string(#msg) + std::s
 #define FlowCheckError(function) \
 if (!function)                   \
 {                                \
-    throw std::runtime_error(std::string("FlowError: ") + std::string(#function) + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__));   \
+    throw std::runtime_error(std::string("FlowError: ") + std::string(__FILE__) + std::string(" at line ") + std::string("%u", __LINE__) + std::string(" execute ") + std::string(#function));   \
 }
 
 #define FlowCheckVulkan(fuc) \

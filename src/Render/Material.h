@@ -18,12 +18,14 @@ namespace Flow {
         Undefine,
     };
 
-    struct MaterialUnit{
+    struct MaterialUnit {
+        virtual ~MaterialUnit() = default;
         std::string name;
         ResourceType type;
     };
 
-    struct MaterialSet{
+    struct MaterialSet {
+        virtual ~MaterialSet() = default;
         std::vector<UP(MaterialUnit)> units;
     };
 
@@ -31,6 +33,7 @@ namespace Flow {
     public:
         static SP(Material) creatMaterial(const std::vector<std::pair<std::string, uint32_t>>& _shaderFiles);
         Material();
+        virtual ~Material() = default;
     public:
         void pushSet(UP(MaterialSet) _set) {
             sets.push_back(std::move(_set));

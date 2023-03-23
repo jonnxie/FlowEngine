@@ -11,7 +11,7 @@
 namespace Flow {
 
     enum class ComponentType{
-        Render,
+        Render = 0,
         Compute,
     };
 
