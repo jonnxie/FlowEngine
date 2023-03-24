@@ -8,6 +8,7 @@
 #include "Render/ViewPort.h"
 #include "Macro/Macro.h"
 #include "entt.hpp"
+#include <unordered_map>
 
 namespace Flow {
     class Object;
@@ -26,9 +27,9 @@ namespace Flow {
             return registry.view<Components...>();
         }
     public:
-        void addViewPort(SP(ViewPort) _viewport);
+        void addViewPort(const std::string& _id, SP(ViewPort) _viewport);
     private:
-        std::vector<SP(ViewPort)> viewports;
+        std::unordered_map<std::string, SP(ViewPort)> viewports;
         ObjectMap objectMap;
         entt::registry registry;
     };

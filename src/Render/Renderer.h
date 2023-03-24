@@ -23,6 +23,7 @@ class Scene;
     class Renderer {
     public:
         static SP(Renderer) createRender();
+        virtual ~Renderer() = default;
     public:
         virtual void render(Scene* scene) = 0;
         virtual void attachFrameBuffer(FrameBuffer* frameBuffer) = 0;

@@ -10,9 +10,10 @@
 namespace Flow {
     class Scene;
 
-    class MultiThreadComputer : public Computer{
+    class MultiThreadComputer final: public Computer{
     public:
         void compute(Scene* scene) override;
+        ~MultiThreadComputer() override = default;
     };
 
 } // Flow

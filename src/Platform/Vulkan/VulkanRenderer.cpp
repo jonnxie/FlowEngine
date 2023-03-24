@@ -31,6 +31,7 @@ namespace Flow {
             ptr->setRenderer(this);
             components.push_back(ptr);
         }
+//        bindCamera()
         threadPool->executeVector<VulkanRenderComponent*>(components, [](VulkanRenderComponent* _item,size_t _index, size_t _threadIndex){
             _item->bindThread(_threadIndex);
             (*_item)(_item);

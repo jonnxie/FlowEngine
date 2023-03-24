@@ -52,7 +52,7 @@ namespace Flow{
         void releaseMouse(int _mouse);
     };
 
-    class GLFWWindow : public Window {
+    class GLFWWindow final: public Window {
     public:
         GLFWWindow(int _width, int _height, std::string  _title) : Window(_width, _height, std::move(_title)){
             init();

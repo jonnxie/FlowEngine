@@ -19,6 +19,7 @@ namespace Flow {
 
     class Computer {
     public:
+        virtual ~Computer() = default;
         virtual void compute(Scene* scene) = 0;
     public:
         void setRenderMode(ComputeMode _mode) { computeMode = _mode;}

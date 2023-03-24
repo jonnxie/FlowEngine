@@ -15,9 +15,9 @@ namespace Flow {
 
     class ThreadPool;
 
-    class VulkanComputer : public Computer{
+    class VulkanComputer final: public Computer{
     public:
-        ~VulkanComputer();
+        ~VulkanComputer() override;
     public:
         void compute(Scene* scene) override;
     private:

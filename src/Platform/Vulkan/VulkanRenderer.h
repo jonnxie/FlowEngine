@@ -17,10 +17,10 @@ namespace Flow {
 
     class Camera;
 
-    class VulkanRenderer : public Renderer{
+    class VulkanRenderer final : public Renderer{
     public:
         VulkanRenderer();
-        ~VulkanRenderer();
+        ~VulkanRenderer() override;
         DisableCopy(VulkanRenderer);
     public:
         void render(Scene* scene) override;

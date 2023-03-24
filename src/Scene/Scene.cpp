@@ -3,6 +3,8 @@
 //
 
 #include "Scene.h"
+
+#include <utility>
 #include "Object.h"
 
 namespace Flow {
@@ -14,8 +16,8 @@ namespace Flow {
         return objectMap[_id];
     }
 
-    void Scene::addViewPort(std::shared_ptr<ViewPort> _viewport) {
-        viewports.emplace_back(_viewport);
+    void Scene::addViewPort(const std::string& _id, SP(ViewPort) _viewport) {
+        viewports[_id] = std::move(_viewport);
     }
 
     UP(Scene) makeScene(){
