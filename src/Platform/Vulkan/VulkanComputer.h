@@ -20,6 +20,7 @@ namespace Flow {
         ~VulkanComputer() override;
     public:
         void compute(Scene* scene) override;
+        void allocateCommandBuffer(uint32_t _threadIndex, VkCommandBuffer* _cmd);
     private:
         void init();
         void createComputeCB();

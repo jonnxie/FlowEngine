@@ -9,6 +9,7 @@
 #include <thread>
 #include "Compute/threadpool.h"
 #include "VulkanRenderComponent.h"
+#include "VulkanFrameBuffer.h"
 #include "Scene/Object.h"
 #include "Scene/Camera.h"
 
@@ -31,11 +32,21 @@ namespace Flow {
             ptr->setRenderer(this);
             components.push_back(ptr);
         }
-//        bindCamera()
-        threadPool->executeVector<VulkanRenderComponent*>(components, [](VulkanRenderComponent* _item,size_t _index, size_t _threadIndex){
-            _item->bindThread(_threadIndex);
-            (*_item)(_item);
-        });
+        /*
+         * Bind Multi Viewport
+         */
+        const auto& viewports = scene->getViewPorts();
+        for (auto& [id, viewport] : viewports)
+        {
+            VulkanFrameBuffer* fb = dynamic_cast<VulkanFrameBuffer *>(viewport->getFrameBuffer().get());
+            renderBegin(fb);
+            threadPool->executeVector<VulkanRenderComponent*>(components, [](VulkanRenderComponent* _item,size_t _index, size_t _threadIndex){
+                _item->bindThread(_threadIndex);
+                (*_item)(_item);
+            });
+            threadPool->wait();
+            renderEnd(fb);
+        }
     }
 
     void VulkanRenderer::attachFrameBuffer(FrameBuffer *frameBuffer) {
@@ -98,6 +109,45 @@ namespace Flow {
     }
 
     void VulkanRenderer::bindCamera(Camera* _camera) {
+
+    }
+
+    void VulkanRenderer::renderBegin(VulkanFrameBuffer* frameBuffer) {
+        VkCommandBufferBeginInfo cmdBufInfo{};
+        {
+            cmdBufInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            cmdBufInfo.pNext = VK_NULL_HANDLE;
+            cmdBufInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+            cmdBufInfo.pInheritanceInfo = VK_NULL_HANDLE;
+        }
+
+        VkRenderPassBeginInfo renderPassBeginInfo{};
+        {
+            auto spec = frameBuffer->getSpec();
+            renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+            renderPassBeginInfo.pNext = VK_NULL_HANDLE;
+            renderPassBeginInfo.renderPass = frameBuffer->getRenderPass();
+            renderPassBeginInfo.framebuffer = frameBuffer->getFrameBuffer();
+            renderPassBeginInfo.renderArea.offset = {0, 0};
+            renderPassBeginInfo.renderArea.extent = VkExtent2D {spec->Width, spec->Height};
+            renderPassBeginInfo.clearValueCount = spec->Samples;
+            std::vector<VkClearValue> values{};
+            for (auto& format : spec->formats)
+            {
+                if (format.usage == Usage::Color)
+                {
+//                    values.emplace_back(VkClearValue{.color = format.clearValue.color.});
+                } else
+                {
+//                    values.emplace_back(VkClearValue{.depthStencil = format.clearValue});
+                }
+            }
+            renderPassBeginInfo.pClearValues = values.data();
+        }
+
+    }
+
+    void VulkanRenderer::renderEnd(VulkanFrameBuffer* frameBuffer) {
 
     }
 } // Flow

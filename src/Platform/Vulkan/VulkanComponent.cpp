@@ -20,7 +20,7 @@ namespace Flow {
             }
             case ComponentType::Compute:
             {
-                auto computer = VulkanContext->getRenderer();
+                auto computer = VulkanContext->getComputer();
                 return computer->allocateCommandBuffer(_threadIndex, &cmb);
             }
         }

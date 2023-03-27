@@ -66,4 +66,15 @@ namespace Flow {
             VKExecute(vkCreateCommandPool(VulkanDevice, &cmdPoolInfo, nullptr, &pool));
         }
     }
+
+    void VulkanComputer::allocateCommandBuffer(uint32_t _threadIndex, VkCommandBuffer *_cmd) {
+        VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
+        commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        commandBufferAllocateInfo.pNext = VK_NULL_HANDLE;
+        commandBufferAllocateInfo.commandPool = computeCMDPools[_threadIndex];
+        commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+        commandBufferAllocateInfo.commandBufferCount = 1;
+
+        VKExecute(vkAllocateCommandBuffers(VulkanDevice, &commandBufferAllocateInfo, _cmd));
+    }
 } // Flow

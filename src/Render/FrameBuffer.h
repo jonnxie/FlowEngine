@@ -37,6 +37,10 @@ namespace Flow{
         virtual void release() = 0;
         virtual void releaseCaptureVals() = 0;
         virtual void save(const std::string& _path, uint32_t _index) = 0;
+        FrameBufferSpecification* getSpec()
+        {
+            return m_spec.get();
+        }
     protected:
         UP(FrameBufferSpecification) m_spec;
     };

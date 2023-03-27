@@ -41,8 +41,11 @@ namespace Flow{
         {
             return spec->camera;
         }
+        void bindFrameBuffer(SP(FrameBuffer) _frameBuffer) { frameBuffer = std::move(_frameBuffer);}
+        SP(FrameBuffer) getFrameBuffer() { return frameBuffer;}
     private:
-        UP(ViewPortSpec) spec;
+        UP(ViewPortSpec) spec{};
+        SP(FrameBuffer) frameBuffer{};
     };
 }
 

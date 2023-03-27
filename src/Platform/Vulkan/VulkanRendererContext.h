@@ -78,7 +78,7 @@ namespace Flow{
         VkFormat getSwapChainFormat() {return swapChainFormat;}
         void saveScreenshot(std::basic_string<char> _filename) override;
         VkCommandBuffer beginSingleCommandBuffer(CBType _type = CBType::Graphics);
-        VkRenderPass getRenderPass() {return renderPass;}
+        VkRenderPass getPresentRenderPass() {return presentRenderPass;}
         void endSingleCommandBuffer(VkCommandBuffer _cmd, CBType _type = CBType::Graphics);
         VkQueue getQueue(QueueType _type);
         VkCommandPool getCBPool(CBType _type);
@@ -138,7 +138,7 @@ namespace Flow{
         VkSwapchainKHR swapchain{VK_NULL_HANDLE};
         uint32_t swapchainCount{};
         uint32_t minSwapchainCount{};
-        VkRenderPass renderPass{};
+        VkRenderPass presentRenderPass{};
         VkSemaphore imageAvailableSemaphore;
         struct VkPresent {
             VkImage image;
