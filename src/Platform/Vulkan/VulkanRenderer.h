@@ -39,9 +39,10 @@ namespace Flow {
         void bindCamera(Camera* _camera);
     private:
         VulkanRendererContext* context;
-        VkCommandBuffer graphicsCB;
+//        VkCommandBuffer graphicsCB;
         VkSemaphore renderFinishedSemaphore;
-        std::vector<VkCommandPool> graphicsCMDPools;
+        std::vector<VkCommandPool> graphicsCMDPools{};
+        std::vector<VkCommandBuffer> cmbVec{};
         UP(ThreadPool) threadPool;
         VkCommandBufferInheritanceInfo inheritanceInfo{};
         VkCommandBufferBeginInfo commandBufferBeginInfo{};

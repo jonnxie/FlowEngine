@@ -9,6 +9,7 @@
 #include "VulkanRenderer.h"
 #include "VulkanMaterial.h"
 #include "VulkanPipeline.h"
+#include "VulkanMacro.h"
 
 namespace Flow {
     VulkanRenderComponent::~VulkanRenderComponent() {
@@ -33,10 +34,10 @@ namespace Flow {
     }
 
     void VulkanRenderComponent::begin() {
-        vkBeginCommandBuffer(cmb, info);
+        VKExecute(vkBeginCommandBuffer(cmb, info));
     }
 
     void VulkanRenderComponent::end() {
-        vkEndCommandBuffer(cmb);
+        VKExecute(vkEndCommandBuffer(cmb));
     }
 } // Flow

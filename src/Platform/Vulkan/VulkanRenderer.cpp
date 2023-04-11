@@ -47,6 +47,7 @@ namespace Flow {
             });
             threadPool->wait();
             renderEnd(fb);
+            cmbVec.push_back(fb->getCMD());
         }
     }
 
@@ -55,14 +56,14 @@ namespace Flow {
     }
 
     void VulkanRenderer::createCommandBuffer() {
-        auto pool =  context->getCBPool(CBType::Graphics);
-        VkCommandBufferAllocateInfo allocateInfo {};
-        allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocateInfo.pNext = VK_NULL_HANDLE;
-        allocateInfo.commandPool = pool;
-        allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-        VKExecute(vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB))
+//        auto pool =  context->getCBPool(CBType::Graphics);
+//        VkCommandBufferAllocateInfo allocateInfo {};
+//        allocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+//        allocateInfo.pNext = VK_NULL_HANDLE;
+//        allocateInfo.commandPool = pool;
+//        allocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+//
+//        VKExecute(vkAllocateCommandBuffers(*context, &allocateInfo, &graphicsCB))
     }
 
     VulkanRenderer::VulkanRenderer() {
@@ -70,8 +71,8 @@ namespace Flow {
     }
 
     VulkanRenderer::~VulkanRenderer() {
-        auto pool =  VulkanContext->getCBPool(CBType::Graphics);
-        vkFreeCommandBuffers(VulkanDevice, pool, 1, &graphicsCB);
+//        auto pool =  VulkanContext->getCBPool(CBType::Graphics);
+//        vkFreeCommandBuffers(VulkanDevice, pool, 1, &graphicsCB);
     }
 
     void VulkanRenderer::createSemaphore() {
@@ -147,7 +148,7 @@ namespace Flow {
                 }
             }
             renderPassBeginInfo.pClearValues = values.data();
-            vkCmdBeginRenderPass(graphicsCB, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
+            vkCmdBeginRenderPass(frameBuffer->getCMD(), &renderPassBeginInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
             inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
             inheritanceInfo.pNext = VK_NULL_HANDLE;
             inheritanceInfo.renderPass = frameBuffer->getRenderPass();
@@ -163,7 +164,7 @@ namespace Flow {
     }
 
     void VulkanRenderer::renderEnd(VulkanFrameBuffer* frameBuffer) {
-        vkCmdEndRenderPass(graphicsCB);
-        vkEndCommandBuffer(graphicsCB);
+        vkCmdEndRenderPass(frameBuffer->getCMD());
+        vkEndCommandBuffer(frameBuffer->getCMD());
     }
 } // Flow
