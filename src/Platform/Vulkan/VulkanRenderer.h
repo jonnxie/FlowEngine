@@ -43,6 +43,8 @@ namespace Flow {
         VkSemaphore renderFinishedSemaphore;
         std::vector<VkCommandPool> graphicsCMDPools;
         UP(ThreadPool) threadPool;
+        VkCommandBufferInheritanceInfo inheritanceInfo{};
+        VkCommandBufferBeginInfo commandBufferBeginInfo{};
     };
 
 } // Flow

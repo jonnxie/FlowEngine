@@ -26,6 +26,8 @@ namespace Flow {
         virtual void drawIndex(size_t _count, size_t _offset){};
         virtual void draw(size_t _count, size_t _offset) {};
         virtual void bindMaterial(const Material* _mat){};
+        virtual void begin(){};
+        virtual void end(){};
         void operator()(RenderComponent* _component) {
             renderFunction(_component);
         }

@@ -126,6 +126,7 @@ namespace Flow {
 #define one_vec2 8
 #define one_vec3 12
 #define one_vec4 16
+#define one_float4 16
 #define one_matrix 64
 
 #define defaultModelCount 20

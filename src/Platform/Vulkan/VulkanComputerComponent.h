@@ -19,7 +19,6 @@ namespace Flow {
         void bindMaterial(Material* _mat) override;
         void dispatch(uint32_t _xCount, uint32_t _yCount, uint32_t _zCount) override;
     private:
-        VkCommandBuffer cmb{};
     };
 
 } // Flow

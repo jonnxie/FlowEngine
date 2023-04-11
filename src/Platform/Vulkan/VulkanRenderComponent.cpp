@@ -31,4 +31,12 @@ namespace Flow {
     void VulkanRenderComponent::draw(size_t _count, size_t _offset) {
         vkCmdDraw(cmb, _count, 1, _offset, 0);
     }
+
+    void VulkanRenderComponent::begin() {
+        vkBeginCommandBuffer(cmb, info);
+    }
+
+    void VulkanRenderComponent::end() {
+        vkEndCommandBuffer(cmb);
+    }
 } // Flow
