@@ -25,24 +25,39 @@ namespace Flow{
     class ViewPort {
     public:
         ViewPort() = default;
-        explicit ViewPort(UP(ViewPortSpec) _spec): spec(std::move(_spec)){};
+        explicit ViewPort(UP(ViewPortSpec) _spec): m_spec(std::move(_spec)){};
         virtual ~ViewPort() = default;
         static SP(ViewPort) createViewPort(UP(ViewPortSpec) _spec);
     public:
         std::pair<uint32_t, uint32_t> getOffset()
         {
-            return {spec->x, spec->x};
+            return {m_spec->x, m_spec->x};
         }
         std::pair<uint32_t, uint32_t> getExtent()
         {
-            return {spec->width, spec->height};
+            return {m_spec->width, m_spec->height};
         }
         Camera& getCamera()
         {
-            return spec->camera;
+            return m_spec->camera;
+        }
+        void setFrameBuffer(const std::vector<AttachFormat>& _formats,
+        uint32_t _samples = 1,
+        bool _swapChainTarget = false)
+        {
+            UP(FrameBufferSpecification) spec = std::make_unique<FrameBufferSpecification>(m_spec->width, m_spec->height,
+                                          _formats,
+                                          _samples,
+                                          _swapChainTarget);
+            frameBuffer = FrameBuffer::createFramebuffer(std::move(spec));
+        }
+        SP(FrameBuffer)& getFrameBuffer()
+        {
+            return frameBuffer;
         }
     private:
-        UP(ViewPortSpec) spec;
+        UP(ViewPortSpec) m_spec;
+        SP(FrameBuffer) frameBuffer{nullptr};
     };
 }
 

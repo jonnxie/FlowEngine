@@ -9,6 +9,7 @@
 #include <thread>
 #include "Compute/threadpool.h"
 #include "VulkanRenderComponent.h"
+#include "VulkanFrameBuffer.h"
 #include "Scene/Object.h"
 #include "Scene/Camera.h"
 
@@ -39,6 +40,7 @@ namespace Flow {
     }
 
     void VulkanRenderer::attachFrameBuffer(FrameBuffer *frameBuffer) {
+        auto fbo(dynamic_cast<VulkanFrameBuffer*>(frameBuffer));
 
     }
 
