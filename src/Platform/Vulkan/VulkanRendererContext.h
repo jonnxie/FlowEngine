@@ -78,7 +78,7 @@ namespace Flow{
         VkFormat getSwapChainFormat() {return swapChainFormat;}
         void saveScreenshot(std::basic_string<char> _filename) override;
         VkCommandBuffer beginSingleCommandBuffer(CBType _type = CBType::Graphics);
-        VkRenderPass getRenderPass() {return renderPass;}
+        VkRenderPass getPresentRenderPass() {return presentRenderPass;}
         void endSingleCommandBuffer(VkCommandBuffer _cmd, CBType _type = CBType::Graphics);
         VkQueue getQueue(QueueType _type);
         VkCommandPool getCBPool(CBType _type);
@@ -93,6 +93,9 @@ namespace Flow{
         void setRenderer(VulkanRenderer* _renderer) { renderer = _renderer;}
         VulkanComputer* getComputer() {return computer;}
         void setComputer(VulkanComputer* _computer) { computer = _computer;}
+        VkCommandPool getGraphicsCMDPool() const {return graphicCP;}
+        VkCommandPool getComputeCMDPool() const {return computeCP;}
+        VkCommandPool getTransferCMDPool() const {return transferCP;}
     private:
         void createInstance();
         void setDebugCallback();
@@ -138,7 +141,7 @@ namespace Flow{
         VkSwapchainKHR swapchain{VK_NULL_HANDLE};
         uint32_t swapchainCount{};
         uint32_t minSwapchainCount{};
-        VkRenderPass renderPass{};
+        VkRenderPass presentRenderPass{};
         VkSemaphore imageAvailableSemaphore;
         struct VkPresent {
             VkImage image;
@@ -152,6 +155,9 @@ namespace Flow{
     };
 
 #define VulkanDevice ((VulkanRendererContext*)RendererContext::get().get())->getLogicalDevice()
+#define VulkanGraphicsCMDPool ((VulkanRendererContext*)RendererContext::get().get())->getGraphicsCMDPool()
+#define VulkanComputeCMDPool ((VulkanRendererContext*)RendererContext::get().get())->getComputeCMDPool()
+#define VulkanTransferCMDPool ((VulkanRendererContext*)RendererContext::get().get())->getTransferCMDPool()
 #define VulkanPhysicalDevice ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDevice()
 #define VulkanPhysicalDeviceMemoryProperties ((VulkanRendererContext*)RendererContext::get().get())->getPhysicalDeviceMemoryProperties()
 #define VulkanSwapChainFormat ((VulkanRendererContext*)RendererContext::get().get())->getSwapChainFormat()

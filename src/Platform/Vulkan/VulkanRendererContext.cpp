@@ -771,7 +771,7 @@ namespace Flow{
         renderPassInfo.dependencyCount = 2;
         renderPassInfo.pDependencies = dependency.data();
 
-        VKExecute(vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass))
+        VKExecute(vkCreateRenderPass(device, &renderPassInfo, nullptr, &presentRenderPass))
     }
 
     void VulkanRendererContext::createCommandPool() {
@@ -844,7 +844,7 @@ namespace Flow{
             vkCreateSampler(device, &samplerInfo, nullptr, &m_presents[i].sampler);
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = renderPass;
+            framebufferInfo.renderPass = presentRenderPass;
             framebufferInfo.attachmentCount = 1;
             framebufferInfo.pAttachments = &m_presents[i].imageView;
             framebufferInfo.width = (*window)().first;
@@ -925,7 +925,7 @@ namespace Flow{
         vkDestroyCommandPool(device, computeCP, nullptr);
         vkDestroyCommandPool(device, transferCP, nullptr);
         vkDestroySampler(device,linearSampler, nullptr);
-        vkDestroyRenderPass(device, renderPass, nullptr);
+        vkDestroyRenderPass(device, presentRenderPass, nullptr);
 
         vkDestroyDevice(device, nullptr);
         DestroyDebugReportCallbackEXT(instance, callback, nullptr);

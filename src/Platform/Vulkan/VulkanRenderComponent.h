@@ -23,9 +23,12 @@ namespace Flow {
         void drawIndex(size_t _count, size_t _offset) override;
         void draw(size_t _count, size_t _offset) override;
         void bindMaterial(const Material* _mat) override;
-
+        void begin() override;
+        void end() override;
+    public:
+        void setCMBBeginInfo(VkCommandBufferBeginInfo* _info) {info = _info;}
     private:
-        VkCommandBuffer cmb{};
+        VkCommandBufferBeginInfo* info{};
     };
 
 } // Flow

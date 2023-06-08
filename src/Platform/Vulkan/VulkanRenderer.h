@@ -17,7 +17,9 @@ namespace Flow {
 
     class Camera;
 
-    class VulkanRenderer final : public Renderer{
+    class VulkanFrameBuffer;
+
+    class VulkanRenderer final : public Renderer {
     public:
         VulkanRenderer();
         ~VulkanRenderer() override;
@@ -28,6 +30,8 @@ namespace Flow {
         void allocateCommandBuffer(uint32_t _threadIndex, VkCommandBuffer* _cmd);
     private:
         void init();
+        void renderBegin(VulkanFrameBuffer* frameBuffer);
+        void renderEnd(VulkanFrameBuffer* frameBuffer);
         void createCommandBuffer();
         void createSemaphore();
         void createThreadPool();
@@ -35,10 +39,13 @@ namespace Flow {
         void bindCamera(Camera* _camera);
     private:
         VulkanRendererContext* context;
-        VkCommandBuffer graphicsCB;
+//        VkCommandBuffer graphicsCB;
         VkSemaphore renderFinishedSemaphore;
-        std::vector<VkCommandPool> graphicsCMDPools;
+        std::vector<VkCommandPool> graphicsCMDPools{};
+        std::vector<VkCommandBuffer> cmbVec{};
         UP(ThreadPool) threadPool;
+        VkCommandBufferInheritanceInfo inheritanceInfo{};
+        VkCommandBufferBeginInfo commandBufferBeginInfo{};
     };
 
 } // Flow

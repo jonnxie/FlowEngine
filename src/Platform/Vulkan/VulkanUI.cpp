@@ -37,7 +37,7 @@ namespace Flow {
 
         ImGui::StyleColorsLight();
 
-        initResources(context->getRenderPass(), context->getQueue(QueueType::Transfer), ShaderFilePath);
+        initResources(context->getPresentRenderPass(), context->getQueue(QueueType::Transfer), ShaderFilePath);
         ImGui_ImplGlfw_InitForVulkan(((GLFWWindow*)window)->get(), true);
         ImGui_ImplVulkan_InitInfo initInfo{};
         {
@@ -55,7 +55,7 @@ namespace Flow {
             initInfo.Allocator = nullptr;
             initInfo.CheckVkResultFn = check_vk_result;
         }
-        ImGui_ImplVulkan_Init(&initInfo, context->getRenderPass());
+        ImGui_ImplVulkan_Init(&initInfo, context->getPresentRenderPass());
         return true;
     }
 

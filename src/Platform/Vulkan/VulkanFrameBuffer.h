@@ -35,11 +35,16 @@ namespace Flow {
         void releaseCaptureVals() final;
         void save(const std::string& _path, uint32_t _index) final;
         std::vector<VkAttachment>& getAttachments() {return m_attachments;};
+        VkRenderPass getRenderPass() const {return m_renderPass;}
+        VkFramebuffer getFrameBuffer() const {return m_frame_buffer;}
+        VkCommandBuffer& getCMD() {return m_cmd;}
     private:
         std::unordered_map<VkFormat, std::pair<VkBuffer, VkDeviceMemory>> m_captureVals;
-        SP(VulkanSmartHandle<VkFramebuffer>)                m_frame_buffer{};
+        VulkanSmartHandle<VkFramebuffer>  m_frame_buffer{VK_NULL_HANDLE};
         std::vector<VkAttachment>       m_attachments{};
+        VulkanSmartHandle<VkRenderPass> m_renderPass{VK_NULL_HANDLE};
         bool                            m_released = false;
+        VkCommandBuffer                 m_cmd{};
     };
 
 } // Flow

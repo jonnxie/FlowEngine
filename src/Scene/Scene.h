@@ -28,6 +28,7 @@ namespace Flow {
         }
     public:
         void addViewPort(const std::string& _id, SP(ViewPort) _viewport);
+        const std::unordered_map<std::string, SP(ViewPort)>& getViewPorts() const { return viewports;}
     private:
         std::unordered_map<std::string, SP(ViewPort)> viewports;
         ObjectMap objectMap;

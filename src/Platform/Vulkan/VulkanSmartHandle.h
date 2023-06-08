@@ -60,6 +60,8 @@ namespace Flow {
             vkDestroyPipeline(device, handle, nullptr);
         } else if constexpr(std::is_same_v<Handle, VkDescriptorPool>) {
             vkDestroyDescriptorPool(device, handle, nullptr);
+        } else if constexpr(std::is_same_v<Handle, VkRenderPass>) {
+            vkDestroyRenderPass(device, handle, nullptr);
         }
         handle = VK_NULL_HANDLE;
     }

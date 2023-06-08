@@ -17,9 +17,26 @@ enum class Usage{
     Depth
 };
 
+typedef union ClearColorValue {
+    float       float32[4];
+    int32_t     int32[4];
+    uint32_t    uint32[4];
+} ClearColorValue;
+
+typedef struct ClearDepthStencilValue {
+    float       depth;
+    uint32_t    stencil;
+} ClearDepthStencilValue;
+
+typedef union ClearValue {
+    ClearColorValue           color;
+    ClearDepthStencilValue    depthStencil;
+} ClearValue;
+
 struct AttachFormat{
     TextureFormat format;
     Usage usage;
+    ClearValue clearValue;
 };
 
 #endif //MAIN_FORMATFILTER_HPP

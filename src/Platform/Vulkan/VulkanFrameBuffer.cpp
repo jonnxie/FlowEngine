@@ -39,7 +39,6 @@ namespace Flow {
             vkDestroySampler(device, a.sampler, nullptr);
         }
 
-        m_frame_buffer->release();
         m_released = true;
     }
 
@@ -327,6 +326,14 @@ namespace Flow {
 
         VkFramebuffer framebuffer;
         vkCreateFramebuffer(device, &info, nullptr, &framebuffer);
-        m_frame_buffer = std::make_shared<VulkanSmartHandle<VkFramebuffer>>(framebuffer);
+        m_frame_buffer = framebuffer;
+
+        VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
+        commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        commandBufferAllocateInfo.pNext = VK_NULL_HANDLE;
+        commandBufferAllocateInfo.commandPool = VulkanGraphicsCMDPool;
+        commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        commandBufferAllocateInfo.commandBufferCount = 1;
+        VK_CHECK_RESULT(vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, &m_cmd));
     }
 } // Flow
