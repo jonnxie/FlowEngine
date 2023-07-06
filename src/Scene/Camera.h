@@ -26,6 +26,9 @@ namespace Flow {
         void setWH(float _width, float _height);
         void setFovy(float _fovy);
         void setCameraMode(CameraMode _mode);
+    public:
+        void move(glm::vec3 _movement);
+        void rotate(glm::vec3 _center, glm::vec3 _axis, float _angle);
     private:
         void generateVPMatrix(glm::mat4* _matrix);
     private:
