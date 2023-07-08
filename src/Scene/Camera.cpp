@@ -3,6 +3,7 @@
 //
 
 #include "Camera.h"
+#include "Math/Math.h"
 
 namespace Flow {
     void Camera::setTarget(glm::vec3 _target) {
@@ -41,6 +42,22 @@ namespace Flow {
 
     void Camera::setCameraMode(CameraMode _mode) {
         mode = _mode;
+    }
+
+    void Camera::move(glm::vec3 _movement)
+    {
+        target += _movement;
+        pos += _movement;
+    }
+
+    void Camera::rotate(glm::vec3 _center, glm::vec3 _axis, float _angle)
+    {
+        auto rotate = Math::generateRoateMatrix(_center, _axis, _angle);
+        glm::vec3 upTarget = pos + up;
+        target = rotate * glm::vec4(target, 1.0f);
+        pos = rotate * glm::vec4(pos, 1.0f);
+        upTarget = rotate * glm::vec4(upTarget, 1.0f);
+        up = upTarget - pos;
     }
 
     void Camera::setFovy(float _fovy) {
