@@ -29,6 +29,7 @@ namespace Flow {
     public:
         void move(glm::vec3 _movement);
         void rotate(glm::vec3 _center, glm::vec3 _axis, float _angle);
+        void scale(float _rate);
     private:
         void generateVPMatrix(glm::mat4* _matrix);
     private:
@@ -37,6 +38,7 @@ namespace Flow {
         glm::vec3 up{};
         float near, far;
         float width, height;
+        float aspect;
         float fovy = glm::radians(45.0f);
         CameraMode mode{};
     };

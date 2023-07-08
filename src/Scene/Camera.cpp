@@ -19,7 +19,6 @@ namespace Flow {
         glm::mat4 proj;
         if (mode == CameraMode::Perspective)
         {
-            float aspect = width / height;
             float reverse_aspect = 1.0f / aspect;
             proj = glm::perspective(fovy, aspect, near, far);
         } else {
@@ -32,6 +31,7 @@ namespace Flow {
     void Camera::setWH(float _width, float _height) {
         width = _width;
         height = _height;
+        aspect = width / height;
     }
 
     void Camera::setNF(float _near, float _far) {
@@ -62,6 +62,14 @@ namespace Flow {
 
     void Camera::setFovy(float _fovy) {
         fovy = _fovy;
+    }
+
+    void Camera::scale(float _rate) {
+        float newNear = near * _rate;
+        glm::vec3 direction = glm::normalize(target - pos);
+        float distance = newNear - near;
+        pos -= distance * direction;
+        target -= distance * direction;
     }
 
 } // Flow
